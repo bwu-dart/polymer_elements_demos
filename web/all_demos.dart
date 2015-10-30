@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 library polymer_elements_demos.web.all_demos;
 
 import 'dart:html' as dom;
+import 'dart:js' show JsObject;
 
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/iron_list.dart';
@@ -129,7 +130,6 @@ import 'paper_tooltip/paper_tooltip_demo.dart';
 //  import 'neon_animation/reprojection/index.dart';
 //  import 'neon_animation/tiles/index.dart';
 
-
 /// Silence analyzer [DemoElements], [PaperItem], [PaperDrawerPanel],
 /// [PaperHeaderPanel], [IronList], [PaperToolbar],
 /// [FirebaseElementDemo]
@@ -247,7 +247,8 @@ class AllDemos extends PolymerElement {
   DemoElementItem selected;
 
   void ready() {
-    set('demos', demoElements.map((name) => new DemoElementItem(name)).toList());
+    set('demos',
+        demoElements.map((name) => new DemoElementItem(name)).toList());
     _demoList.selectItem(convertToJs(demos.first));
     _loadDemo(demos.first);
   }
@@ -257,8 +258,9 @@ class AllDemos extends PolymerElement {
   @reflectable
   void demoClickHandler(dom.Event event, [_]) {
     // TODO(zoechi) remove workaround when #90 is fixed
-    final item = convertToDart(_demoList.jsElement.callMethod(
-        'modelForElement', [event.target])['demo']) as DemoElementItem;
+    final item = convertToDart(new JsObject.fromBrowserObject(
+            _demoList.jsElement.callMethod('modelForElement', [event.target]))[
+        'demo']) as DemoElementItem;
     // If the currently selected item is clicked, IronList deselects it.
     // We disable this behavior.
     if (_demoList.selectedItem == null) {

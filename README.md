@@ -10,3 +10,4 @@ Not all demos are fully working yet and a few are not yet ported.
 This package is not intended to be added as a dependency.
   
   
+[Explore the demos online](http://bwu-dart.github.io/polymer_elements_demos/web/index.html)
