@@ -4,8 +4,7 @@ author: Polymer.dart Authors <guenter@gzoechbauer.com>
 description: Polymer polymer_elements for Dart examples.
 homepage: https://github.com/bwu-dart/polymer_elements_demos
 environment:
-  sdk: ">=1.12.0 <2.0.0"
-
+  sdk: '>=1.12.0 <2.0.0'
 dependencies:
   browser: ^0.10.0
   polymer: ^1.0.0-rc.4
@@ -19,8 +18,6 @@ dev_dependencies:
   test: ^0.12.0
   quiver: '>=0.21.4 <0.22.0'
   crypto: '>=0.9.1 <0.10.0'
-environment:
-  sdk: '>=1.6.0 <2.0.0'
 transformers:
 - web_components:
     entry_points:
