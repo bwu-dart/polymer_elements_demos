@@ -12,7 +12,7 @@ library polymer_elements.demo.web.firebase_element.firebase_element_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 import 'package:polymer_elements/firebase_collection.dart';
 import 'package:polymer_elements/firebase_document.dart';
 import 'x_pretty_json.dart';

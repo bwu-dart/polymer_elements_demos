@@ -367,7 +367,7 @@ class GitHubOrganizationComparer {
           elementDartFile,
           _elementDartContent(tagName,
               library:
-                  'polymer_elements_demo.web.${_pathToLibraryName(exampleDirectory)}'));
+                  'polymer_elements_demos.web.${_pathToLibraryName(exampleDirectory)}'));
     });
 
     String styleContent = '';
@@ -399,7 +399,7 @@ class GitHubOrganizationComparer {
         appElementDartFile,
         _elementDartContent(tagName,
             library:
-                'polymer_elements_demo.${_pathToLibraryName(exampleDirectory)}',
+                'polymer_elements_demos.${_pathToLibraryName(exampleDirectory)}',
             elementsImports: elementsImports,
             localImports: localImports,
             importDemoElements: true));
@@ -437,7 +437,7 @@ class GitHubOrganizationComparer {
     }
     if (importDemoElements) {
       imports.add(
-          "import 'package:polymer_elements_demo/styles/demo_elements.dart';");
+          "import 'package:polymer_elements_demos/styles/demo_elements.dart';");
       silenceClasses += ' [DemoElements],';
     }
     if (localImports != null) {

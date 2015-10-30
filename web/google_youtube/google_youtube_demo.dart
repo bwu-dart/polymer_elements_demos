@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('google_youtube_demo.html')
-library polymer_elements_demo.web.google_youtube.google_youtube_demo;
+library polymer_elements_demos.web.google_youtube.google_youtube_demo;
 
 import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/google_youtube.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [DemoElements],
 @PolymerRegister('google-youtube-demo')

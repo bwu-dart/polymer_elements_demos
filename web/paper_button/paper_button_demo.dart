@@ -8,14 +8,14 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('paper_button_demo.html')
-library polymer_elements_demo.web.paper_button.paper_button_demo;
+library polymer_elements_demos.web.paper_button.paper_button_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/color.dart';
 import 'package:polymer_elements/iron_icons.dart';
 import 'package:polymer_elements/paper_button.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [Color], [IronIcons], [PaperButton], [DemoElements],
 @PolymerRegister('paper-button-demo')

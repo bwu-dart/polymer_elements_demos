@@ -8,11 +8,11 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('iron_iconset_svg_demo.html')
-library polymer_elements_demo.web.iron_iconset_svg.iron_iconset_svg_demo;
+library polymer_elements_demos.web.iron_iconset_svg.iron_iconset_svg_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 import 'svg_sample_icons.dart';
 
 /// Silence analyzer [DemoElements]

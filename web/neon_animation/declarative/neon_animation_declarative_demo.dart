@@ -8,12 +8,12 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('neon_animation_declarative_demo.html')
-library polymer_elements_demo.web.neon_animation.card.neon_animation_declarative_demo;
+library polymer_elements_demos.web.neon_animation.card.neon_animation_declarative_demo;
 
 import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 import 'package:polymer_elements/neon_animated_pages.dart';
 import 'package:polymer_elements/neon_animatable.dart';
 import 'package:polymer_elements/neon_animation/animations/slide_from_left_animation.dart';

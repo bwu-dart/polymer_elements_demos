@@ -16,7 +16,7 @@ import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/gold_cc_expiration_input.dart';
 import 'package:polymer_elements/demo_pages.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [GoldCcExpirationInput], [DemoPages], [DemoElements],
 @PolymerRegister('gold-cc-expiration-input-demo')

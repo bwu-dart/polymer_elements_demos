@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('iron_list_external_content_demo.html')
-library polymer_elements_demo.web.iron_list.iron_list_external_content_demo;
+library polymer_elements_demos.web.iron_list.iron_list_external_content_demo;
 
 import 'dart:html' as dom;
 import 'dart:math' as math;
@@ -22,7 +22,7 @@ import 'package:polymer_elements/paper_icon_button.dart';
 import 'package:polymer_elements/iron_ajax.dart';
 import 'package:polymer_elements/iron_icons.dart';
 import 'package:polymer_elements/iron_list.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [Polymer], [IronFlexLayout], [PaperToolbar], [PaperScrollHeaderPanel], [PaperSpinner], [PaperIconButton], [IronAjax], [IronIcons], [IronList], [DemoElements],
 @PolymerRegister('iron-list-external-content-demo')

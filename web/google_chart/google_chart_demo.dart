@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('google_chart_demo.html')
-library polymer_elements_demo.web.google_chart.google_chart_demo;
+library polymer_elements_demos.web.google_chart.google_chart_demo;
 
 import 'dart:async' show Timer;
 import 'dart:html' as dom;
@@ -16,7 +16,7 @@ import 'dart:math' show Random;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/google_chart.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [GoogleChart], [DemoElements],
 @PolymerRegister('google-chart-demo')

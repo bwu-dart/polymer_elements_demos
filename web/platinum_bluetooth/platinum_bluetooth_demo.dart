@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('platinum_bluetooth_demo.html')
-library polymer_elements_demo.web.platinum_bluetooth.platinum_bluetooth_demo;
+library polymer_elements_demos.web.platinum_bluetooth.platinum_bluetooth_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
@@ -19,7 +19,7 @@ import 'package:polymer_elements/paper_progress.dart';
 import 'package:polymer_elements/paper_button.dart';
 import 'package:polymer_elements/platinum_bluetooth_device.dart';
 import 'package:polymer_elements/platinum_bluetooth_characteristic.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [MarkedElement], [PaperItem], [PaperMaterial], [PaperProgress], [PaperButton], [PlatinumBluetoothDevice], [PlatinumBluetoothCharacteristic], [DemoElements],
 @PolymerRegister('platinum-bluetooth-demo')

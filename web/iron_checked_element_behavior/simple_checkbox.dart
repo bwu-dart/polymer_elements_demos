@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('simple_checkbox.html')
-library polymer_elements_demo.web.web.iron_checked_element_behavior.simple_checkbox;
+library polymer_elements_demos.web.web.iron_checked_element_behavior.simple_checkbox;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer_elements/iron_checked_element_behavior.dart';

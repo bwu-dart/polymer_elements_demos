@@ -13,7 +13,7 @@ library polymer_elements.demo.web.gold_cc_cvc_input.gold_cc_cvc_input_demo;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/gold_cc_cvc_input.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [GoldCcCvcInput], [DemoElements]
 @PolymerRegister('gold-cc-cvc-input-demo')

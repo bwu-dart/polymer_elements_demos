@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('paper_scroll_header_panel_demo.html')
-library polymer_elements_demo.web.paper_scroll_header_panel.paper_scroll_header_panel_demo;
+library polymer_elements_demos.web.paper_scroll_header_panel.paper_scroll_header_panel_demo;
 
 import 'dart:math' as math;
 import 'package:web_components/web_components.dart' show HtmlImport;
@@ -17,7 +17,7 @@ import 'package:polymer_elements/paper_scroll_header_panel.dart';
 import 'package:polymer_elements/paper_toolbar.dart';
 import 'package:polymer_elements/iron_icons.dart';
 import 'package:polymer_elements/paper_icon_button.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 import 'sample_content.dart';
 
 /// Silence analyzer [PaperScrollHeaderPanel], [PaperToolbar], [IronIcons], [PaperIconButton], [DemoElements], [SampleContent],

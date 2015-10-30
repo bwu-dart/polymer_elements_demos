@@ -8,12 +8,12 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('gold_zip_input_demo.html')
-library polymer_elements_demo.web.gold_zip_input.gold_zip_input_demo;
+library polymer_elements_demos.web.gold_zip_input.gold_zip_input_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/gold_zip_input.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [GoldZipInput], [DemoElements],
 @PolymerRegister('gold-zip-input-demo')

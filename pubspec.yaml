@@ -258,5 +258,6 @@ transformers:
 - test/pub_serve:
     $include: test/**_test{.*,}.dart
 - $dart2js:
-    minify: true
+#    minify: true
     $include: '**/*.bootstrap.initialize.dart'
+    commandLineOptions: ['--trust-type-annotations', '--trust-primitives']

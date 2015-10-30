@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('paper_material_demo.html')
-library polymer_elements_demo.web.paper_material.paper_material_demo;
+library polymer_elements_demos.web.paper_material.paper_material_demo;
 
 import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;
@@ -16,7 +16,7 @@ import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/iron_flex_layout.dart';
 import 'package:polymer_elements/typography.dart';
 import 'package:polymer_elements/paper_material.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [IronFlexLayout], [Typography], [PaperMaterial], [DemoElements],
 @PolymerRegister('paper-material-demo')

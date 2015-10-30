@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('reprojected_pages.html')
-library polymer_elements_demo.web.web.neon_animation.reprojected_pages;
+library polymer_elements_demos.web.web.neon_animation.reprojected_pages;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';

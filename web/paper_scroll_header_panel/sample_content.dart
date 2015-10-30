@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('sample_content.html')
-library polymer_elements_demo.web.web.paper_scroll_header_panel.sample_content;
+library polymer_elements_demos.web.web.paper_scroll_header_panel.sample_content;
 
 import 'dart:html' as dom;
 import 'dart:math' as math;

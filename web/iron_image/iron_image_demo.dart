@@ -8,14 +8,14 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('iron_image_demo.html')
-library polymer_elements_demo.web.iron_image.iron_image_demo;
+library polymer_elements_demos.web.iron_image.iron_image_demo;
 
 import 'dart:html' as dom;
 import 'dart:math' show Random;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/iron_image.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [IronImage], [DemoElements],
 @PolymerRegister('iron-image-demo')

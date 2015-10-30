@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('platinum_sw_demo.html')
-library polymer_elements_demo.web.platinum_sw.platinum_sw_demo;
+library polymer_elements_demos.web.platinum_sw.platinum_sw_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/platinum_sw_elements.dart';
 import 'package:polymer_elements/marked_element.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [PlatinumSwElements], [MarkedElement], [DemoElements],
 @PolymerRegister('platinum-sw-demo')

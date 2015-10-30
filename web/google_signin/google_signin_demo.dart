@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('google_signin_demo.html')
-library polymer_elements_demo.web.google_signin.google_signin_demo;
+library polymer_elements_demos.web.google_signin.google_signin_demo;
 
 import 'dart:html' as dom;
 import 'dart:js' as js;
@@ -16,7 +16,7 @@ import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/google_signin.dart';
 import 'package:polymer_elements/google_signin_aware.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [GoogleSignin], [GoogleSigninAware], [DemoElements]
 @PolymerRegister('google-signin-demo')

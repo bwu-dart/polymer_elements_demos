@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('simple_fit.html')
-library polymer_elements_demo.web.web.iron_fit_behavior.simple_fit;
+library polymer_elements_demos.web.web.iron_fit_behavior.simple_fit;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';

@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('x_progressbar.html')
-library polymer_elements_demo.web.iron_range_behavior.x_progressbar;
+library polymer_elements_demos.web.iron_range_behavior.x_progressbar;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';

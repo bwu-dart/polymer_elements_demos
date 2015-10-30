@@ -1,8 +1,8 @@
-.idea
+.idea/
 .github_token
 __new__
 __updated__
 packages
 .packages
-build
+build/
 .pub

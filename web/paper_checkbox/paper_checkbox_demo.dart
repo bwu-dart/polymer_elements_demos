@@ -8,12 +8,12 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('paper_checkbox_demo.html')
-library polymer_elements_demo.web.paper_checkbox.paper_checkbox_demo;
+library polymer_elements_demos.web.paper_checkbox.paper_checkbox_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/paper_checkbox.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [PaperCheckbox], [DemoElements],
 @PolymerRegister('paper-checkbox-demo')

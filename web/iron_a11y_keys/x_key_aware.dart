@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('x_key_aware.html')
-library polymer_elements_demo.web.web.iron_a11y_keys.x_key_aware;
+library polymer_elements_demos.web.web.iron_a11y_keys.x_key_aware;
 
 import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;

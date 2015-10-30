@@ -7,7 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
-library polymer_elements_demo.web.web.paper_input.ssn_validator;
+library polymer_elements_demos.web.web.paper_input.ssn_validator;
 
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/iron_validator_behavior.dart';

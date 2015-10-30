@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('paper_dropdown_menu_demo.html')
-library polymer_elements_demo.web.paper_dropdown_menu.paper_dropdown_menu_demo;
+library polymer_elements_demos.web.paper_dropdown_menu.paper_dropdown_menu_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
@@ -19,7 +19,7 @@ import 'package:polymer_elements/paper_item.dart';
 import 'package:polymer_elements/paper_button.dart';
 import 'package:polymer_elements/paper_tabs.dart';
 import 'package:polymer_elements/paper_dropdown_menu.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [IronIcons], [IronIcon], [PaperMenu], [PaperItem], [PaperButton], [PaperTabs], [PaperDropdownMenu], [DemoElements],
 @PolymerRegister('paper-dropdown-menu-demo')

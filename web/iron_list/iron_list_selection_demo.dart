@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('iron_list_selection_demo.html')
-library polymer_elements_demo.web.iron_list.iron_list_selection_demo;
+library polymer_elements_demos.web.iron_list.iron_list_selection_demo;
 
 import 'dart:html' as dom;
 import 'dart:js' as js;
@@ -26,7 +26,7 @@ import 'package:polymer_elements/iron_list.dart';
 import 'package:polymer_elements/paper_menu.dart';
 import 'package:polymer_elements/paper_item.dart';
 import 'package:polymer_elements/paper_badge.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
 /// Silence analyzer [Polymer], [IronFlexLayout], [PaperToolbar], [PaperIconButton], [IronIcon], [IronAjax], [IronIcons], [IronList], [PaperMenu], [PaperItem], [PaperBadge], [DemoElements],
 @PolymerRegister('iron-list-selection-demo')

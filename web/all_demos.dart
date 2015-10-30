@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 @HtmlImport('all_demos.html')
-library polymer_elements_demo.web.all_demos;
+library polymer_elements_demos.web.all_demos;
 
 import 'dart:html' as dom;
 
@@ -18,7 +18,7 @@ import 'package:polymer_elements/paper_drawer_panel.dart';
 import 'package:polymer_elements/paper_header_panel.dart';
 import 'package:polymer_elements/paper_item.dart';
 import 'package:polymer_elements/paper_toolbar.dart';
-import 'package:polymer_elements_demo/styles/demo_elements.dart';
+import 'package:polymer_elements_demos/styles/demo_elements.dart';
 import 'package:web_components/web_components.dart' show HtmlImport;
 
 import 'firebase_element/firebase_element_demo.dart';
