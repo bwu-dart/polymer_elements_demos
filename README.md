@@ -1,5 +1,5 @@
 # Polymer elements demos
-Dart port of the JS demos of the https://elements.polymer-project.org/
+Dart port of the JS demos of the elements in [Elements Polymer Catalog](https://elements.polymer-project.org/)
   
 The demos demonstrate how to use the 
 [Polymer elements](https://pub.dartlang.org/packages/polymer_elements) in Dart 
