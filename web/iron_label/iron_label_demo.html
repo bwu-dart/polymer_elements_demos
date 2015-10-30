@@ -1,0 +1,192 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<dom-module id="iron-label-demo">
+  <template>
+        <style>
+      
+      .vertical-section {
+        text-align: center;
+      }
+    
+    </style>
+<style include="demo-elements"></style>
+  
+    <style>
+      .vertical-section {
+        text-align: center;
+      }
+    </style>
+
+    <div class="vertical-center-justified layout">
+      <div class="vertical-section">
+        <h4>native label element</h4>
+
+        <div class="center horizontal layout">
+          <label>regular label<input type="checkbox"></label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <label>regular label 2<input></label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <label>
+            a
+            <input>
+            b
+          </label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <label for="native">
+            hi
+          </label>
+
+          <button id="native">hello</button>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <label>
+            a
+            <button>b</button>
+            c
+          </label>
+        </div>
+      </div>
+
+      <div class="vertical-section">
+        <h4>iron-label element</h4>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            label next to checkbox
+            <input type="checkbox">
+            something
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label for="quux">
+            label for checkbox
+          </iron-label>
+          <input id="quux" type="checkbox">
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label for="foo">
+            <div class="center vertical layout">
+              <img src="http://placehold.it/200x200" alt="200x200 placeholder image">
+              image (with alt attribute) label
+            </div>
+          </iron-label>
+
+          <input id="foo" type="checkbox">
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label for="bar">
+            label for a class .bar
+          </iron-label>
+          <input id="bar" type="checkbox">
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            input label
+            <input>
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            paper checkbox
+            <paper-checkbox></paper-checkbox>
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            paper slider
+            <paper-slider min="0" max="100" value="50"></paper-slider>
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            input type range
+            <input type="range">
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            a
+            <input type="text">
+            b
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            c
+            <button>hi</button>
+            d
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label>
+            label this button
+            <paper-button>labelled by parent</paper-button>
+          </iron-label>
+        </div>
+
+        <br>
+
+        <div class="center horizontal layout">
+          <iron-label for="two">
+            Hi!
+          </iron-label>
+
+          <button id="one">sup</button>
+          <button id="two">whazzup</button>
+        </div>
+      </div>
+    
+  </template>
+</dom-module>

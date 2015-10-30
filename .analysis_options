@@ -1,0 +1,28 @@
+# https://codereview.chromium.org/1234293003/diff/20001/pkg/analysis_server/test/context_manager_test.dart?context=10&column_width=80&tab_spaces=2
+analyzer:
+  strong-mode: true
+  exclude:
+  - web/neon_animation/**
+  - web/platinum_bluetooth/**
+  - web/platinum_https_redirect/**
+  - web/platinum_push_messaging/**
+  - **/*.html
+  - **/__new__/**
+  - **/__updated__/**
+
+linter:
+  rules:
+    # see http://dart-lang.github.io/linter/lints/
+    - camel_case_types
+    - empty_constructor_bodies
+    - library_names
+    - super_goes_last
+    - type_init_formals
+    - slash_for_doc_comments
+    - library_prefixes
+    - non_constant_identifier_names
+    - one_member_abstracts
+#    - unnecessary_brace_in_string_interp
+    - unnecessary_getters_setters
+    - package_names
+
