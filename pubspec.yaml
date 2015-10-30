@@ -1,10 +1,13 @@
 name: polymer_elements_demos
 version: 0.1.0
-author: Polymer.dart Authors <web-ui-dev@dartlang.org>
-description: Polymer polymer-elements for Dart examples.
-homepage: https://www.dartlang.org/polymer/
+author: Polymer.dart Authors <guenter@gzoechbauer.com>
+description: Polymer polymer_elements for Dart examples.
+homepage: https://github.com/bwu-dart/polymer_elements_demos
+environment:
+  sdk: ">=1.12.0 <2.0.0"
+
 dependencies:
-  browser: any
+  browser: ^0.10.0
   polymer: ^1.0.0-rc.4
   polymer_elements: ^1.0.0-rc.2
   polymer_interop: ^1.0.0-rc.3
@@ -258,6 +261,5 @@ transformers:
 - test/pub_serve:
     $include: test/**_test{.*,}.dart
 - $dart2js:
-#    minify: true
     $include: '**/*.bootstrap.initialize.dart'
     commandLineOptions: ['--trust-type-annotations', '--trust-primitives']
