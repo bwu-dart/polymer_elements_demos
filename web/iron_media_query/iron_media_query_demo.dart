@@ -21,5 +21,6 @@ import 'package:polymer_elements_demos/styles/demo_elements.dart';
 class IronMediaQueryDemo extends PolymerElement {
   IronMediaQueryDemo.created() : super.created();
 
-  @property bool queryMatches;
+  @property bool wide;
+  @property bool print;
 }

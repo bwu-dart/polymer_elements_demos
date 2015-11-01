@@ -280,8 +280,6 @@ class AllDemos extends PolymerElement {
 
 class DemoElementItem extends JsProxy {
   @reflectable
-  bool isActive = false;
-  @reflectable
   final String name;
   @reflectable
   DemoElementItem(this.name);
