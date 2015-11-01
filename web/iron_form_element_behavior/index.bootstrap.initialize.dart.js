@@ -5255,35 +5255,6 @@ C.al=function(getTagFallback) {
     hooks.getTag = getTagFallback;
   };
 }
-C.an=function(hooks) {
-  var userAgent = typeof navigator == "object" ? navigator.userAgent : "";
-  if (userAgent.indexOf("Trident/") == -1) return hooks;
-  var getTag = hooks.getTag;
-  var quickMap = {
-    "BeforeUnloadEvent": "Event",
-    "DataTransfer": "Clipboard",
-    "HTMLDDElement": "HTMLElement",
-    "HTMLDTElement": "HTMLElement",
-    "HTMLPhraseElement": "HTMLElement",
-    "Position": "Geoposition"
-  };
-  function getTagIE(o) {
-    var tag = getTag(o);
-    var newTag = quickMap[tag];
-    if (newTag) return newTag;
-    if (tag == "Object") {
-      if (window.DataView && (o instanceof window.DataView)) return "DataView";
-    }
-    return tag;
-  }
-  function prototypeForTagIE(tag) {
-    var constructor = window[tag];
-    if (constructor == null) return null;
-    return constructor.prototype;
-  }
-  hooks.getTag = getTagIE;
-  hooks.prototypeForTag = prototypeForTagIE;
-}
 C.am=function() {
   function typeNameInChrome(o) {
     var constructor = o.constructor;
@@ -5319,6 +5290,35 @@ C.am=function() {
     getUnknownTag: isBrowser ? getUnknownTagGenericBrowser : getUnknownTag,
     prototypeForTag: prototypeForTag,
     discriminator: discriminator };
+}
+C.an=function(hooks) {
+  var userAgent = typeof navigator == "object" ? navigator.userAgent : "";
+  if (userAgent.indexOf("Trident/") == -1) return hooks;
+  var getTag = hooks.getTag;
+  var quickMap = {
+    "BeforeUnloadEvent": "Event",
+    "DataTransfer": "Clipboard",
+    "HTMLDDElement": "HTMLElement",
+    "HTMLDTElement": "HTMLElement",
+    "HTMLPhraseElement": "HTMLElement",
+    "Position": "Geoposition"
+  };
+  function getTagIE(o) {
+    var tag = getTag(o);
+    var newTag = quickMap[tag];
+    if (newTag) return newTag;
+    if (tag == "Object") {
+      if (window.DataView && (o instanceof window.DataView)) return "DataView";
+    }
+    return tag;
+  }
+  function prototypeForTagIE(tag) {
+    var constructor = window[tag];
+    if (constructor == null) return null;
+    return constructor.prototype;
+  }
+  hooks.getTag = getTagIE;
+  hooks.prototypeForTag = prototypeForTagIE;
 }
 C.ao=function(hooks) {
   var getTag = hooks.getTag;
@@ -5413,9 +5413,9 @@ C.H=new T.bg(null,"simple-input-element","input")
 C.aL=H.b(I.n([C.H]),[P.a])
 C.I=new T.bg(null,"simple-form","form")
 C.aM=H.b(I.n([C.I]),[P.a])
-C.a=H.b(I.n([]),[P.j])
-C.e=H.b(I.n([]),[P.a])
 C.h=I.n([])
+C.e=H.b(I.n([]),[P.a])
+C.a=H.b(I.n([]),[P.j])
 C.D=H.b(I.n([C.b]),[P.a])
 C.aO=I.n(["ready","attached","detached","attributeChanged","serialize","deserialize"])
 C.aR=new U.bJ("iron-form-element-unregister")

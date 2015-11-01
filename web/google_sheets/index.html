@@ -273,7 +273,7 @@ document.registerElement('dom-module', DomModule);
 function forceDocumentUpgrade() {
 if (cePolyfill) {
 var script = document._currentScript || document.currentScript;
-var doc = script && script.ownerDocument;
+var doc = script && script.ownerDocument || document;
 if (doc) {
 CustomElements.upgradeAll(doc);
 }
@@ -585,7 +585,7 @@ debouncer.stop();
 }
 }
 });
-Polymer.version = '1.1.4';
+Polymer.version = '1.2.0';
 Polymer.Base._addFeature({
 _registerFeatures: function () {
 this._prepIs();
@@ -693,30 +693,16 @@ this._marshalBehaviors();
       // than using a JsProxy object for the element.
       _propertyChanged: function(path, newValue, oldValue) {
         var parts = this._getPathParts(path);
-        var array;
+        var prop = parts.splice(parts.length - 1, 1)[0];
 
         // Get the model which is being updated.
-        var thisArg = this;
-        for (var i = 0; i < parts.length - 1; i++) {
-          var part = parts[i];
+        var thisArg = this.get(parts);
 
-          if (array && (parseInt(part) == part)) {
-            thisArg = Polymer.Collection.get(array).getItem(part);
-          } else {
-            thisArg = thisArg[part];
-          }
-
-          if (!thisArg) {
-            return;
-          }
-          array = Array.isArray(thisArg) ? thisArg : null;
-        }
-
-        // The property of the model which is being updated.
-        var prop = parts[parts.length - 1];
-        if (array && (parseInt(prop) == prop)) {
+        // If the property to update is an array key, we need to get the index
+        // for that item instead.
+        if (prop.charAt(0) == '#') {
           // Ouch, O(n) operation :(. Also doesn't support duplicates :(.
-          prop = array.indexOf(Polymer.Collection.get(array).getItem(prop));
+          prop = thisArg.indexOf(Polymer.Collection.get(thisArg).getItem(prop));
         }
 
         // Grab the __dartClass__ if we already have one
@@ -1001,61 +987,6 @@ return currentValue === previousValue;
 };
 return new ArraySplice();
 }();
-Polymer.EventApi = function () {
-var Settings = Polymer.Settings;
-var EventApi = function (event) {
-this.event = event;
-};
-if (Settings.useShadow) {
-EventApi.prototype = {
-get rootTarget() {
-return this.event.path[0];
-},
-get localTarget() {
-return this.event.target;
-},
-get path() {
-return this.event.path;
-}
-};
-} else {
-EventApi.prototype = {
-get rootTarget() {
-return this.event.target;
-},
-get localTarget() {
-var current = this.event.currentTarget;
-var currentRoot = current && Polymer.dom(current).getOwnerRoot();
-var p$ = this.path;
-for (var i = 0; i < p$.length; i++) {
-if (Polymer.dom(p$[i]).getOwnerRoot() === currentRoot) {
-return p$[i];
-}
-}
-},
-get path() {
-if (!this.event._path) {
-var path = [];
-var o = this.rootTarget;
-while (o) {
-path.push(o);
-o = Polymer.dom(o).parentNode || o.host;
-}
-path.push(window);
-this.event._path = path;
-}
-return this.event._path;
-}
-};
-}
-var factory = function (event) {
-if (!event.__eventApi) {
-event.__eventApi = new EventApi(event);
-}
-return event.__eventApi;
-};
-return { factory: factory };
-}();
 Polymer.domInnerHTML = function () {
 var escapeAttrRegExp = /[&\u00A0"]/g;
 var escapeDataRegExp = /[&\u00A0<>]/g;
@@ -1194,7 +1125,7 @@ insertBefore: function (node, ref_node) {
 return this._addNode(node, ref_node);
 },
 _addNode: function (node, ref_node) {
-this._removeNodeFromHost(node, true);
+this._removeNodeFromParent(node);
 var addedInsertionPoint;
 var root = this.getOwnerRoot();
 if (root) {
@@ -1226,6 +1157,7 @@ nativeAppendChild.call(container, node);
 if (addedInsertionPoint) {
 this._updateInsertionPoints(root.host);
 }
+this.notifyObserver();
 return node;
 },
 removeChild: function (node) {
@@ -1240,6 +1172,7 @@ removeFromComposedParent(container, node);
 nativeRemoveChild.call(container, node);
 }
 }
+this.notifyObserver();
 return node;
 },
 replaceChild: function (node, ref_node) {
@@ -1332,6 +1265,13 @@ return Boolean(node._lightChildren !== undefined);
 _parentNeedsDistribution: function (parent) {
 return parent && parent.shadyRoot && hasInsertionPoint(parent.shadyRoot);
 },
+_removeNodeFromParent: function (node) {
+var parent = node._lightParent || node.parentNode;
+if (parent && hasDomApi(parent)) {
+factory(parent).notifyObserver();
+}
+this._removeNodeFromHost(node, true);
+},
 _removeNodeFromHost: function (node, ensureComposedRemoval) {
 var hostNeedsDist;
 var root;
@@ -1343,7 +1283,7 @@ if (root) {
 root.host._elementRemove(node);
 hostNeedsDist = this._removeDistributedChildren(root, node);
 }
-this._removeLogicalInfo(node, node._lightParent);
+this._removeLogicalInfo(node, parent);
 }
 this._removeOwnerShadyRoot(node);
 if (root && hostNeedsDist) {
@@ -1462,24 +1402,29 @@ getDistributedNodes: function () {
 return this.node._distributedNodes || [];
 },
 queryDistributedElements: function (selector) {
-var c$ = this.childNodes;
+var c$ = this.getEffectiveChildNodes();
 var list = [];
-this._distributedFilter(selector, c$, list);
 for (var i = 0, l = c$.length, c; i < l && (c = c$[i]); i++) {
-if (c.localName === CONTENT) {
-this._distributedFilter(selector, factory(c).getDistributedNodes(), list);
+if (c.nodeType === Node.ELEMENT_NODE && matchesSelector.call(c, selector)) {
+list.push(c);
 }
 }
 return list;
 },
-_distributedFilter: function (selector, list, results) {
-results = results || [];
-for (var i = 0, l = list.length, d; i < l && (d = list[i]); i++) {
-if (d.nodeType === Node.ELEMENT_NODE && d.localName !== CONTENT && matchesSelector.call(d, selector)) {
-results.push(d);
+getEffectiveChildNodes: function () {
+var list = [];
+var c$ = this.childNodes;
+for (var i = 0, l = c$.length, c; i < l && (c = c$[i]); i++) {
+if (c.localName === CONTENT) {
+var d$ = factory(c).getDistributedNodes();
+for (var j = 0; j < d$.length; j++) {
+list.push(d$[j]);
+}
+} else {
+list.push(c);
 }
 }
-return results;
+return list;
 },
 _clear: function () {
 while (this.childNodes.length) {
@@ -1523,36 +1468,24 @@ d.appendChild(nc);
 }
 }
 return n;
+},
+observeNodes: function (callback) {
+if (callback) {
+if (!this.observer) {
+this.observer = this.node.localName === CONTENT ? new DomApi.DistributedNodesObserver(this) : new DomApi.EffectiveNodesObserver(this);
 }
-};
-Object.defineProperty(DomApi.prototype, 'classList', {
-get: function () {
-if (!this._classList) {
-this._classList = new DomApi.ClassList(this);
+return this.observer.addListener(callback);
 }
-return this._classList;
 },
-configurable: true
-});
-DomApi.ClassList = function (host) {
-this.domApi = host;
-this.node = host.node;
-};
-DomApi.ClassList.prototype = {
-add: function () {
-this.node.classList.add.apply(this.node.classList, arguments);
-this.domApi._distributeParent();
+unobserveNodes: function (handle) {
+if (this.observer) {
+this.observer.removeListener(handle);
+}
 },
-remove: function () {
-this.node.classList.remove.apply(this.node.classList, arguments);
-this.domApi._distributeParent();
-},
-toggle: function () {
-this.node.classList.toggle.apply(this.node.classList, arguments);
-this.domApi._distributeParent();
-},
-contains: function () {
-return this.node.classList.contains.apply(this.node.classList, arguments);
+notifyObserver: function () {
+if (this.observer) {
+this.observer.notify();
+}
 }
 };
 if (!Settings.useShadow) {
@@ -1734,6 +1667,17 @@ return n$ ? Array.prototype.slice.call(n$) : [];
 };
 DomApi.prototype._distributeParent = function () {
 };
+var nativeForwards = [
+'appendChild',
+'insertBefore',
+'removeChild',
+'replaceChild'
+];
+nativeForwards.forEach(function (forward) {
+DomApi.prototype[forward] = function () {
+return this.node[forward].apply(this.node, arguments);
+};
+});
 Object.defineProperties(DomApi.prototype, {
 childNodes: {
 get: function () {
@@ -1787,13 +1731,17 @@ configurable: true
 });
 }
 var CONTENT = 'content';
-var factory = function (node, patch) {
+function factory(node, patch) {
 node = node || document;
 if (!node.__domApi) {
 node.__domApi = new DomApi(node, patch);
 }
 return node.__domApi;
-};
+}
+;
+function hasDomApi(node) {
+return Boolean(node.__domApi);
+}
 Polymer.dom = function (obj, patch) {
 if (obj instanceof Event) {
 return Polymer.EventApi.factory(obj);
@@ -1801,43 +1749,6 @@ return Polymer.EventApi.factory(obj);
 return factory(obj, patch);
 }
 };
-Polymer.Base.extend(Polymer.dom, {
-_flushGuard: 0,
-_FLUSH_MAX: 100,
-_needsTakeRecords: !Polymer.Settings.useNativeCustomElements,
-_debouncers: [],
-_finishDebouncer: null,
-flush: function () {
-for (var i = 0; i < this._debouncers.length; i++) {
-this._debouncers[i].complete();
-}
-if (this._finishDebouncer) {
-this._finishDebouncer.complete();
-}
-this._flushPolyfills();
-if (this._debouncers.length && this._flushGuard < this._FLUSH_MAX) {
-this._flushGuard++;
-this.flush();
-} else {
-if (this._flushGuard >= this._FLUSH_MAX) {
-console.warn('Polymer.dom.flush aborted. Flush may not be complete.');
-}
-this._flushGuard = 0;
-}
-},
-_flushPolyfills: function () {
-if (this._needsTakeRecords) {
-CustomElements.takeRecords();
-}
-},
-addDebouncer: function (debouncer) {
-this._debouncers.push(debouncer);
-this._finishDebouncer = Polymer.Debounce(this._finishDebouncer, this._finishFlush);
-},
-_finishFlush: function () {
-Polymer.dom._debouncers = [];
-}
-});
 function getLightChildren(node) {
 var children = node._lightChildren;
 return children ? children : node.childNodes;
@@ -1901,10 +1812,399 @@ saveLightChildrenIfNeeded: saveLightChildrenIfNeeded,
 matchesSelector: matchesSelector,
 hasInsertionPoint: hasInsertionPoint,
 ctor: DomApi,
-factory: factory
+factory: factory,
+hasDomApi: hasDomApi
 };
 }();
+Polymer.Base.extend(Polymer.dom, {
+_flushGuard: 0,
+_FLUSH_MAX: 100,
+_needsTakeRecords: !Polymer.Settings.useNativeCustomElements,
+_debouncers: [],
+_staticFlushList: [],
+_finishDebouncer: null,
+flush: function () {
+this._flushGuard = 0;
+this._prepareFlush();
+while (this._debouncers.length && this._flushGuard < this._FLUSH_MAX) {
+for (var i = 0; i < this._debouncers.length; i++) {
+this._debouncers[i].complete();
+}
+if (this._finishDebouncer) {
+this._finishDebouncer.complete();
+}
+this._prepareFlush();
+this._flushGuard++;
+}
+if (this._flushGuard >= this._FLUSH_MAX) {
+console.warn('Polymer.dom.flush aborted. Flush may not be complete.');
+}
+},
+_prepareFlush: function () {
+if (this._needsTakeRecords) {
+CustomElements.takeRecords();
+}
+for (var i = 0; i < this._staticFlushList.length; i++) {
+this._staticFlushList[i]();
+}
+},
+addStaticFlush: function (fn) {
+this._staticFlushList.push(fn);
+},
+removeStaticFlush: function (fn) {
+var i = this._staticFlushList.indexOf(fn);
+if (i >= 0) {
+this._staticFlushList.splice(i, 1);
+}
+},
+addDebouncer: function (debouncer) {
+this._debouncers.push(debouncer);
+this._finishDebouncer = Polymer.Debounce(this._finishDebouncer, this._finishFlush);
+},
+_finishFlush: function () {
+Polymer.dom._debouncers = [];
+}
+});
+Polymer.EventApi = function () {
+'use strict';
+var DomApi = Polymer.DomApi.ctor;
+var Settings = Polymer.Settings;
+DomApi.Event = function (event) {
+this.event = event;
+};
+if (Settings.useShadow) {
+DomApi.Event.prototype = {
+get rootTarget() {
+return this.event.path[0];
+},
+get localTarget() {
+return this.event.target;
+},
+get path() {
+return this.event.path;
+}
+};
+} else {
+DomApi.Event.prototype = {
+get rootTarget() {
+return this.event.target;
+},
+get localTarget() {
+var current = this.event.currentTarget;
+var currentRoot = current && Polymer.dom(current).getOwnerRoot();
+var p$ = this.path;
+for (var i = 0; i < p$.length; i++) {
+if (Polymer.dom(p$[i]).getOwnerRoot() === currentRoot) {
+return p$[i];
+}
+}
+},
+get path() {
+if (!this.event._path) {
+var path = [];
+var o = this.rootTarget;
+while (o) {
+path.push(o);
+o = Polymer.dom(o).parentNode || o.host;
+}
+path.push(window);
+this.event._path = path;
+}
+return this.event._path;
+}
+};
+}
+var factory = function (event) {
+if (!event.__eventApi) {
+event.__eventApi = new DomApi.Event(event);
+}
+return event.__eventApi;
+};
+return { factory: factory };
+}();
 (function () {
+'use strict';
+var DomApi = Polymer.DomApi.ctor;
+Object.defineProperty(DomApi.prototype, 'classList', {
+get: function () {
+if (!this._classList) {
+this._classList = new DomApi.ClassList(this);
+}
+return this._classList;
+},
+configurable: true
+});
+DomApi.ClassList = function (host) {
+this.domApi = host;
+this.node = host.node;
+};
+DomApi.ClassList.prototype = {
+add: function () {
+this.node.classList.add.apply(this.node.classList, arguments);
+this.domApi._distributeParent();
+},
+remove: function () {
+this.node.classList.remove.apply(this.node.classList, arguments);
+this.domApi._distributeParent();
+},
+toggle: function () {
+this.node.classList.toggle.apply(this.node.classList, arguments);
+this.domApi._distributeParent();
+},
+contains: function () {
+return this.node.classList.contains.apply(this.node.classList, arguments);
+}
+};
+}());
+(function () {
+'use strict';
+var DomApi = Polymer.DomApi.ctor;
+var Settings = Polymer.Settings;
+var hasDomApi = Polymer.DomApi.hasDomApi;
+DomApi.EffectiveNodesObserver = function (domApi) {
+this.domApi = domApi;
+this.node = this.domApi.node;
+this._listeners = [];
+};
+DomApi.EffectiveNodesObserver.prototype = {
+addListener: function (callback) {
+if (!this._isSetup) {
+this._setup();
+this._isSetup = true;
+}
+var listener = {
+fn: callback,
+_nodes: []
+};
+this._listeners.push(listener);
+this._scheduleNotify();
+return listener;
+},
+removeListener: function (handle) {
+var i = this._listeners.indexOf(handle);
+if (i >= 0) {
+this._listeners.splice(i, 1);
+handle._nodes = [];
+}
+if (!this._hasListeners()) {
+this._cleanup();
+this._isSetup = false;
+}
+},
+_setup: function () {
+this._observeContentElements(this.domApi.childNodes);
+},
+_cleanup: function () {
+this._unobserveContentElements(this.domApi.childNodes);
+},
+_hasListeners: function () {
+return Boolean(this._listeners.length);
+},
+_scheduleNotify: function () {
+if (this._debouncer) {
+this._debouncer.stop();
+}
+this._debouncer = Polymer.Debounce(this._debouncer, this._notify);
+this._debouncer.context = this;
+Polymer.dom.addDebouncer(this._debouncer);
+},
+notify: function () {
+if (this._hasListeners()) {
+this._scheduleNotify();
+}
+},
+_notify: function (mxns) {
+this._beforeCallListeners();
+this._callListeners();
+},
+_beforeCallListeners: function () {
+this._updateContentElements();
+},
+_updateContentElements: function () {
+this._observeContentElements(this.domApi.childNodes);
+},
+_observeContentElements: function (elements) {
+for (var i = 0, n; i < elements.length && (n = elements[i]); i++) {
+if (this._isContent(n)) {
+n.__observeNodesMap = n.__observeNodesMap || new WeakMap();
+if (!n.__observeNodesMap.has(this)) {
+n.__observeNodesMap.set(this, this._observeContent(n));
+}
+}
+}
+},
+_observeContent: function (content) {
+var h = Polymer.dom(content).observeNodes(this._scheduleNotify.bind(this));
+h._avoidChangeCalculation = true;
+return h;
+},
+_unobserveContentElements: function (elements) {
+for (var i = 0, n, h; i < elements.length && (n = elements[i]); i++) {
+if (this._isContent(n)) {
+h = n.__observeNodesMap.get(this);
+if (h) {
+Polymer.dom(n).unobserveNodes(h);
+n.__observeNodesMap.delete(this);
+}
+}
+}
+},
+_isContent: function (node) {
+return node.localName === 'content';
+},
+_callListeners: function () {
+var o$ = this._listeners;
+var nodes = this._getEffectiveNodes();
+for (var i = 0, o; i < o$.length && (o = o$[i]); i++) {
+var info = this._generateListenerInfo(o, nodes);
+if (info || o._alwaysNotify) {
+this._callListener(o, info);
+}
+}
+},
+_getEffectiveNodes: function () {
+return this.domApi.getEffectiveChildNodes();
+},
+_generateListenerInfo: function (listener, newNodes) {
+if (listener._avoidChangeCalculation) {
+return true;
+}
+var oldNodes = listener._nodes;
+var info = {
+target: this.node,
+addedNodes: [],
+removedNodes: []
+};
+var splices = Polymer.ArraySplice.calculateSplices(newNodes, oldNodes);
+for (var i = 0, s; i < splices.length && (s = splices[i]); i++) {
+for (var j = 0, n; j < s.removed.length && (n = s.removed[j]); j++) {
+info.removedNodes.push(n);
+}
+}
+for (var i = 0, s; i < splices.length && (s = splices[i]); i++) {
+for (var j = s.index; j < s.index + s.addedCount; j++) {
+info.addedNodes.push(newNodes[j]);
+}
+}
+listener._nodes = newNodes;
+if (info.addedNodes.length || info.removedNodes.length) {
+return info;
+}
+},
+_callListener: function (listener, info) {
+return listener.fn.call(this.node, info);
+},
+enableShadowAttributeTracking: function () {
+}
+};
+if (Settings.useShadow) {
+var baseSetup = DomApi.EffectiveNodesObserver.prototype._setup;
+var baseCleanup = DomApi.EffectiveNodesObserver.prototype._cleanup;
+var beforeCallListeners = DomApi.EffectiveNodesObserver.prototype._beforeCallListeners;
+Polymer.Base.extend(DomApi.EffectiveNodesObserver.prototype, {
+_setup: function () {
+if (!this._observer) {
+var self = this;
+this._mutationHandler = function (mxns) {
+if (mxns && mxns.length) {
+self._scheduleNotify();
+}
+};
+this._observer = new MutationObserver(this._mutationHandler);
+this._boundFlush = this._flush.bind(this);
+Polymer.dom.addStaticFlush(this._boundFlush);
+this._observer.observe(this.node, { childList: true });
+}
+baseSetup.call(this);
+},
+_cleanup: function () {
+this._observer.disconnect();
+this._observer = null;
+this._mutationHandler = null;
+Polymer.dom.removeStaticFlush(this._boundFlush);
+baseCleanup.call(this);
+},
+_flush: function () {
+if (this._observer) {
+this._mutationHandler(this._observer.takeRecords());
+}
+},
+enableShadowAttributeTracking: function () {
+if (this._observer) {
+this._makeContentListenersAlwaysNotify();
+this._observer.disconnect();
+this._observer.observe(this.node, {
+childList: true,
+attributes: true,
+subtree: true
+});
+var root = this.domApi.getOwnerRoot();
+var host = root && root.host;
+if (host && Polymer.dom(host).observer) {
+Polymer.dom(host).observer.enableShadowAttributeTracking();
+}
+}
+},
+_makeContentListenersAlwaysNotify: function () {
+for (var i = 0, h; i < this._listeners.length; i++) {
+h = this._listeners[i];
+h._alwaysNotify = h._isContentListener;
+}
+}
+});
+}
+}());
+(function () {
+'use strict';
+var DomApi = Polymer.DomApi.ctor;
+var Settings = Polymer.Settings;
+DomApi.DistributedNodesObserver = function (domApi) {
+DomApi.EffectiveNodesObserver.call(this, domApi);
+};
+DomApi.DistributedNodesObserver.prototype = Object.create(DomApi.EffectiveNodesObserver.prototype);
+Polymer.Base.extend(DomApi.DistributedNodesObserver.prototype, {
+_setup: function () {
+},
+_cleanup: function () {
+},
+_beforeCallListeners: function () {
+},
+_getEffectiveNodes: function () {
+return this.domApi.getDistributedNodes();
+}
+});
+if (Settings.useShadow) {
+Polymer.Base.extend(DomApi.DistributedNodesObserver.prototype, {
+_setup: function () {
+if (!this._observer) {
+var root = this.domApi.getOwnerRoot();
+var host = root && root.host;
+if (host) {
+this._observer = Polymer.dom(host).observeNodes(this._scheduleNotify.bind(this));
+this._observer._isContentListener = true;
+if (this._hasAttrSelect()) {
+Polymer.dom(host).observer.enableShadowAttributeTracking();
+}
+}
+}
+},
+_hasAttrSelect: function () {
+var select = this.node.getAttribute('select');
+return select && select.match(/[[.]+/);
+},
+_cleanup: function () {
+var root = this.domApi.getOwnerRoot();
+var host = root && root.host;
+if (host) {
+Polymer.dom(host).unobserveNodes(this._observer);
+}
+this._observer = null;
+}
+});
+}
+}());
+(function () {
+var hasDomApi = Polymer.DomApi.hasDomApi;
 Polymer.Base._addFeature({
 _prepShady: function () {
 this._useContent = this._useContent || Boolean(this._template);
@@ -1975,6 +2275,7 @@ if (this._useContent) {
 this.shadyRoot._distributionClean = true;
 if (hasInsertionPoint(this.shadyRoot)) {
 this._composeTree();
+notifyContentObservers(this.shadyRoot);
 } else {
 if (!this.shadyRoot._hasDistributed) {
 this.textContent = '';
@@ -1984,6 +2285,9 @@ this.appendChild(this.shadyRoot);
 var children = this._composeNode(this);
 this._updateChildNodes(this, children);
 }
+}
+if (!this.shadyRoot._hasDistributed) {
+notifyInitialDistribution(this);
 }
 this.shadyRoot._hasDistributed = true;
 }
@@ -2202,6 +2506,19 @@ return host.domHost;
 }
 }
 }
+function notifyContentObservers(root) {
+for (var i = 0, c; i < root._insertionPoints.length; i++) {
+c = root._insertionPoints[i];
+if (hasDomApi(c)) {
+Polymer.dom(c).notifyObserver();
+}
+}
+}
+function notifyInitialDistribution(host) {
+if (hasDomApi(host)) {
+Polymer.dom(host).notifyObserver();
+}
+}
 var needsUpgrade = window.CustomElements && !CustomElements.useNative;
 function upgradeLightChildren(children) {
 if (needsUpgrade && children) {
@@ -2279,22 +2596,66 @@ return list;
 _parseNodeAnnotations: function (node, list) {
 return node.nodeType === Node.TEXT_NODE ? this._parseTextNodeAnnotation(node, list) : this._parseElementAnnotations(node, list);
 },
-_testEscape: function (value) {
-var escape = value.slice(0, 2);
-if (escape === '{{' || escape === '[[') {
-return escape;
+_bindingRegex: /([^{[]*)({{|\[\[)([^}\]]*)(?:]]|}})/g,
+_parseBindings: function (text) {
+var re = this._bindingRegex;
+var parts = [];
+var m, lastIndex;
+while ((m = re.exec(text)) !== null) {
+if (m[1]) {
+parts.push({ literal: m[1] });
+}
+var mode = m[2][0];
+var value = m[3].trim();
+var negate = false;
+if (value[0] == '!') {
+negate = true;
+value = value.substring(1).trim();
+}
+var customEvent, notifyEvent, colon;
+if (mode == '{' && (colon = value.indexOf('::')) > 0) {
+notifyEvent = value.substring(colon + 2);
+value = value.substring(0, colon);
+customEvent = true;
+}
+parts.push({
+compoundIndex: parts.length,
+value: value,
+mode: mode,
+negate: negate,
+event: notifyEvent,
+customEvent: customEvent
+});
+lastIndex = re.lastIndex;
+}
+if (lastIndex && lastIndex < text.length) {
+var literal = text.substring(lastIndex);
+if (literal) {
+parts.push({ literal: literal });
+}
+}
+if (parts.length) {
+return parts;
 }
 },
+_literalFromParts: function (parts) {
+var s = '';
+for (var i = 0; i < parts.length; i++) {
+var literal = parts[i].literal;
+s += literal || '';
+}
+return s;
+},
 _parseTextNodeAnnotation: function (node, list) {
-var v = node.textContent;
-var escape = this._testEscape(v);
-if (escape) {
-node.textContent = ' ';
+var parts = this._parseBindings(node.textContent);
+if (parts) {
+node.textContent = this._literalFromParts(parts) || ' ';
 var annote = {
 bindings: [{
 kind: 'text',
-mode: escape[0],
-value: v.slice(2, -2).trim()
+name: 'textContent',
+parts: parts,
+isCompound: parts.length !== 1
 }]
 };
 list.push(annote);
@@ -2356,62 +2717,50 @@ index: index
 });
 },
 _parseNodeAttributeAnnotations: function (node, annotation) {
-for (var i = node.attributes.length - 1, a; a = node.attributes[i]; i--) {
-var n = a.name, v = a.value;
-if (n === 'id' && !this._testEscape(v)) {
-annotation.id = v;
-} else if (n.slice(0, 3) === 'on-') {
+var attrs = Array.prototype.slice.call(node.attributes);
+for (var i = attrs.length - 1, a; a = attrs[i]; i--) {
+var n = a.name;
+var v = a.value;
+var b;
+if (n.slice(0, 3) === 'on-') {
 node.removeAttribute(n);
 annotation.events.push({
 name: n.slice(3),
 value: v
 });
-} else {
-var b = this._parseNodeAttributeAnnotation(node, n, v);
-if (b) {
+} else if (b = this._parseNodeAttributeAnnotation(node, n, v)) {
 annotation.bindings.push(b);
-}
+} else if (n === 'id') {
+annotation.id = v;
 }
 }
 },
-_parseNodeAttributeAnnotation: function (node, n, v) {
-var escape = this._testEscape(v);
-if (escape) {
-var customEvent;
-var name = n;
-var mode = escape[0];
-v = v.slice(2, -2).trim();
-var not = false;
-if (v[0] == '!') {
-v = v.substring(1);
-not = true;
-}
+_parseNodeAttributeAnnotation: function (node, name, value) {
+var parts = this._parseBindings(value);
+if (parts) {
+var origName = name;
 var kind = 'property';
-if (n[n.length - 1] == '$') {
-name = n.slice(0, -1);
+if (name[name.length - 1] == '$') {
+name = name.slice(0, -1);
 kind = 'attribute';
 }
-var notifyEvent, colon;
-if (mode == '{' && (colon = v.indexOf('::')) > 0) {
-notifyEvent = v.substring(colon + 2);
-v = v.substring(0, colon);
-customEvent = true;
+var literal = this._literalFromParts(parts);
+if (literal && kind == 'attribute') {
+node.setAttribute(name, literal);
 }
-if (node.localName == 'input' && n == 'value') {
-node.setAttribute(n, '');
+if (node.localName == 'input' && name == 'value') {
+node.setAttribute(origName, '');
 }
-node.removeAttribute(n);
+node.removeAttribute(origName);
 if (kind === 'property') {
 name = Polymer.CaseMap.dashToCamelCase(name);
 }
 return {
 kind: kind,
-mode: mode,
 name: name,
-value: v,
-negate: not,
-event: notifyEvent,
-customEvent: customEvent
+parts: parts,
+literal: literal,
+isCompound: parts.length !== 1
 };
 }
 },
@@ -2502,9 +2851,14 @@ for (var i = 0; i < notes.length; i++) {
 var note = notes[i];
 for (var j = 0; j < note.bindings.length; j++) {
 var b = note.bindings[j];
-b.signature = this._parseMethod(b.value);
-if (!b.signature) {
-b.model = this._modelForPath(b.value);
+for (var k = 0; k < b.parts.length; k++) {
+var p = b.parts[k];
+if (!p.literal) {
+p.signature = this._parseMethod(p.value);
+if (!p.signature) {
+p.model = this._modelForPath(p.value);
+}
+}
 }
 }
 if (note.templateContent) {
@@ -2515,10 +2869,12 @@ for (var prop in pp) {
 bindings.push({
 index: note.index,
 kind: 'property',
-mode: '{',
 name: '_parent_' + prop,
+parts: [{
+mode: '{',
 model: prop,
 value: prop
+}]
 });
 }
 note.bindings = note.bindings.concat(bindings);
@@ -2529,14 +2885,16 @@ _discoverTemplateParentProps: function (notes) {
 var pp = {};
 notes.forEach(function (n) {
 n.bindings.forEach(function (b) {
-if (b.signature) {
-var args = b.signature.args;
+b.parts.forEach(function (p) {
+if (p.signature) {
+var args = p.signature.args;
 for (var k = 0; k < args.length; k++) {
 pp[args[k].model] = true;
 }
 } else {
-pp[b.model] = true;
+pp[p.model] = true;
 }
+});
 });
 if (n.templateContent) {
 var tpp = n.templateContent._parentProps;
@@ -2556,15 +2914,43 @@ this._marshalAnnotatedNodes();
 this._marshalAnnotatedListeners();
 }
 },
-_configureAnnotationReferences: function () {
-this._configureTemplateContent();
-},
-_configureTemplateContent: function () {
-this._notes.forEach(function (note, i) {
-if (note.templateContent) {
-this._nodes[i]._content = note.templateContent;
+_configureAnnotationReferences: function (config) {
+var notes = this._notes;
+var nodes = this._nodes;
+for (var i = 0; i < notes.length; i++) {
+var note = notes[i];
+var node = nodes[i];
+this._configureTemplateContent(note, node);
+this._configureCompoundBindings(note, node);
 }
-}, this);
+},
+_configureTemplateContent: function (note, node) {
+if (note.templateContent) {
+node._content = note.templateContent;
+}
+},
+_configureCompoundBindings: function (note, node) {
+var bindings = note.bindings;
+for (var i = 0; i < bindings.length; i++) {
+var binding = bindings[i];
+if (binding.isCompound) {
+var storage = node.__compoundStorage__ || (node.__compoundStorage__ = {});
+var parts = binding.parts;
+var literals = new Array(parts.length);
+for (var j = 0; j < parts.length; j++) {
+literals[j] = parts[j].literal;
+}
+var name = binding.name;
+storage[name] = literals;
+if (binding.literal && binding.kind == 'property') {
+if (node._configValue) {
+node._configValue(name, binding.literal);
+} else {
+node[name] = binding.literal;
+}
+}
+}
+}
 },
 _marshalIdNodes: function () {
 this.$ = {};
@@ -2609,7 +2995,15 @@ this.listen(node, name, listeners[key]);
 }
 },
 listen: function (node, eventName, methodName) {
-this._listen(node, eventName, this._createEventHandler(node, eventName, methodName));
+var handler = this._recallEventHandler(this, eventName, node, methodName);
+if (!handler) {
+handler = this._createEventHandler(node, eventName, methodName);
+}
+if (handler._listening) {
+return;
+}
+this._listen(node, eventName, handler);
+handler._listening = true;
 },
 _boundListenerKey: function (eventName, methodName) {
 return eventName + ':' + methodName;
@@ -2648,6 +3042,7 @@ host[methodName](e, e.detail);
 host._warn(host._logf('_createEventHandler', 'listener method `' + methodName + '` not defined'));
 }
 };
+handler._listening = false;
 this._recordEventHandler(host, eventName, node, methodName, handler);
 return handler;
 },
@@ -2655,6 +3050,7 @@ unlisten: function (node, eventName, methodName) {
 var handler = this._recallEventHandler(this, eventName, node, methodName);
 if (handler) {
 this._unlisten(node, eventName, handler);
+handler._listening = false;
 }
 },
 _listen: function (node, eventName, handler) {
@@ -3346,7 +3742,9 @@ this._callbacks.splice(0, len);
 this._lastVal += len;
 }
 };
-new (window.MutationObserver || JsMutationObserver)(Polymer.Async._atEndOfMicrotask.bind(Polymer.Async)).observe(Polymer.Async._twiddle, { characterData: true });
+new window.MutationObserver(function () {
+Polymer.Async._atEndOfMicrotask();
+}).observe(Polymer.Async._twiddle, { characterData: true });
 Polymer.Debounce = function () {
 var Async = Polymer.Async;
 var Debouncer = function (context) {
@@ -3428,6 +3826,32 @@ if (toElement) {
 Polymer.dom(toElement).setAttribute(name, '');
 }
 },
+getEffectiveChildNodes: function () {
+return Polymer.dom(this).getEffectiveChildNodes();
+},
+getEffectiveChildren: function () {
+var list = Polymer.dom(this).getEffectiveChildNodes();
+return list.filter(function (n) {
+return n.nodeType === Node.ELEMENT_NODE;
+});
+},
+getEffectiveTextContent: function () {
+var cn = this.getEffectiveChildNodes();
+var tc = [];
+for (var i = 0, c; c = cn[i]; i++) {
+if (c.nodeType !== Node.COMMENT_NODE) {
+tc.push(Polymer.dom(c).textContent);
+}
+}
+return tc.join('');
+},
+queryEffectiveChildren: function (slctr) {
+var e$ = Polymer.dom(this).queryDistributedElements(slctr);
+return e$ && e$[0];
+},
+queryAllEffectiveChildren: function (slctr) {
+return Polymer.dom(this).queryAllDistributedElements(slctr);
+},
 getContentChildNodes: function (slctr) {
 var content = Polymer.dom(this.root).querySelector(slctr || 'content');
 return content ? Polymer.dom(content).getDistributedNodes() : [];
@@ -3465,7 +3889,7 @@ if (index >= 0) {
 return path.splice(index, 1);
 }
 } else {
-var arr = this.get(path);
+var arr = this._get(path);
 index = arr.indexOf(item);
 if (index >= 0) {
 return this.splice(path, index, 1);
@@ -3502,6 +3926,12 @@ elt[n] = props[n];
 }
 }
 return elt;
+},
+isLightDescendant: function (node) {
+return this.contains(node) && Polymer.dom(this).getOwnerRoot() === Polymer.dom(node).getOwnerRoot();
+},
+isLocalDescendant: function (node) {
+return this.root === Polymer.dom(node).getOwnerRoot();
 }
 });
 Polymer.Bind = {
@@ -3641,7 +4071,7 @@ _notedListenerFactory: function (property, path, isStructured, bogusTest) {
 return function (e, target) {
 if (!bogusTest(e, target)) {
 if (e.detail && e.detail.path) {
-this.notifyPath(this._fixPath(path, property, e.detail.path), e.detail.value);
+this._notifyPath(this._fixPath(path, property, e.detail.path), e.detail.value);
 } else {
 var value = target[property];
 if (!isStructured) {
@@ -3667,16 +4097,16 @@ node.addEventListener(info.event, inst._notifyListener.bind(inst, info.changedFn
 };
 Polymer.Base.extend(Polymer.Bind, {
 _shouldAddListener: function (effect) {
-return effect.name && effect.mode === '{' && !effect.negate && effect.kind != 'attribute';
+return effect.name && effect.kind != 'attribute' && effect.kind != 'text' && !effect.isCompound && effect.parts[0].mode === '{' && !effect.parts[0].negate;
 },
 _annotationEffect: function (source, value, effect) {
 if (source != effect.value) {
-value = this.get(effect.value);
+value = this._get(effect.value);
 this.__data__[effect.value] = value;
 }
 var calc = effect.negate ? !value : value;
 if (!effect.customEvent || this._nodes[effect.index][effect.name] !== calc) {
-return this._applyEffectValue(calc, effect);
+return this._applyEffectValue(effect, calc);
 }
 },
 _reflectEffect: function (source) {
@@ -3714,7 +4144,7 @@ var args = Polymer.Bind._marshalArgs(this.__data__, effect, source, value);
 if (args) {
 var fn = this[effect.method];
 if (fn) {
-this.__setProperty(effect.property, fn.apply(this, args));
+this.__setProperty(effect.name, fn.apply(this, args));
 } else {
 this._warn(this._logf('_computeEffect', 'compute method `' + effect.method + '` not defined'));
 }
@@ -3730,7 +4160,7 @@ var computedvalue = fn.apply(computedHost, args);
 if (effect.negate) {
 computedvalue = !computedvalue;
 }
-this._applyEffectValue(computedvalue, effect);
+this._applyEffectValue(effect, computedvalue);
 }
 } else {
 computedHost._warn(computedHost._logf('_annotatedComputationEffect', 'compute method `' + effect.method + '` not defined'));
@@ -3746,7 +4176,7 @@ var v;
 if (arg.literal) {
 v = arg.value;
 } else if (arg.structured) {
-v = Polymer.Base.get(name, model);
+v = Polymer.Base._get(name, model);
 } else {
 v = model[name];
 }
@@ -3809,7 +4239,7 @@ this._addPropertyEffect(arg.model, 'compute', {
 method: sig.method,
 args: sig.args,
 trigger: arg,
-property: name
+name: name
 });
 }, this);
 },
@@ -3847,35 +4277,49 @@ this._addAnnotationEffect(binding, index);
 },
 _addAnnotationEffect: function (note, index) {
 if (Polymer.Bind._shouldAddListener(note)) {
-Polymer.Bind._addAnnotatedListener(this, index, note.name, note.value, note.event);
+Polymer.Bind._addAnnotatedListener(this, index, note.name, note.parts[0].value, note.parts[0].event);
 }
-if (note.signature) {
-this._addAnnotatedComputationEffect(note, index);
-} else {
-note.index = index;
-this._addPropertyEffect(note.model, 'annotation', note);
+for (var i = 0; i < note.parts.length; i++) {
+var part = note.parts[i];
+if (part.signature) {
+this._addAnnotatedComputationEffect(note, part, index);
+} else if (!part.literal) {
+this._addPropertyEffect(part.model, 'annotation', {
+kind: note.kind,
+index: index,
+name: note.name,
+value: part.value,
+isCompound: note.isCompound,
+compoundIndex: part.compoundIndex,
+event: part.event,
+customEvent: part.customEvent,
+negate: part.negate
+});
+}
 }
 },
-_addAnnotatedComputationEffect: function (note, index) {
-var sig = note.signature;
+_addAnnotatedComputationEffect: function (note, part, index) {
+var sig = part.signature;
 if (sig.static) {
-this.__addAnnotatedComputationEffect('__static__', index, note, sig, null);
+this.__addAnnotatedComputationEffect('__static__', index, note, part, null);
 } else {
 sig.args.forEach(function (arg) {
 if (!arg.literal) {
-this.__addAnnotatedComputationEffect(arg.model, index, note, sig, arg);
+this.__addAnnotatedComputationEffect(arg.model, index, note, part, arg);
 }
 }, this);
 }
 },
-__addAnnotatedComputationEffect: function (property, index, note, sig, trigger) {
+__addAnnotatedComputationEffect: function (property, index, note, part, trigger) {
 this._addPropertyEffect(property, 'annotatedComputation', {
 index: index,
+isCompound: note.isCompound,
+compoundIndex: part.compoundIndex,
 kind: note.kind,
-property: note.name,
-negate: note.negate,
-method: sig.method,
-args: sig.args,
+name: note.name,
+negate: part.negate,
+method: part.signature.method,
+args: part.signature.args,
 trigger: trigger
 });
 },
@@ -3944,9 +4388,14 @@ _marshalInstanceEffects: function () {
 Polymer.Bind.prepareInstance(this);
 Polymer.Bind.setupBindListeners(this);
 },
-_applyEffectValue: function (value, info) {
+_applyEffectValue: function (info, value) {
 var node = this._nodes[info.index];
-var property = info.property || info.name || 'textContent';
+var property = info.name;
+if (info.isCompound) {
+var storage = node.__compoundStorage__[property];
+storage[info.compoundIndex] = value;
+value = storage.join('');
+}
 if (info.kind == 'attribute') {
 this.serializeValueToAttribute(value, property, node);
 } else {
@@ -4026,10 +4475,10 @@ for (var p in config) {
 var fx = fx$[p];
 if (fx) {
 for (var i = 0, l = fx.length, x; i < l && (x = fx[i]); i++) {
-if (x.kind === 'annotation') {
+if (x.kind === 'annotation' && !x.isCompound) {
 var node = this._nodes[x.effect.index];
 if (node._configValue) {
-var value = p === x.effect.value ? config[p] : this.get(x.effect.value, config);
+var value = p === x.effect.value ? config[p] : this._get(x.effect.value, config);
 node._configValue(x.effect.name, value);
 }
 }
@@ -4076,11 +4525,16 @@ this._handlers = [];
 'use strict';
 Polymer.Base._addFeature({
 notifyPath: function (path, value, fromAbove) {
+var info = {};
+path = this._get(path, this, info);
+this._notifyPath(info.path, value, fromAbove);
+},
+_notifyPath: function (path, value, fromAbove) {
 var old = this._propertySetter(path, value);
 if (old !== value && (old === old || value === value)) {
 this._pathEffector(path, value);
 if (!fromAbove) {
-this._notifyPath(path, value);
+this._notifyPathUp(path, value);
 }
 return true;
 }
@@ -4107,41 +4561,67 @@ var last = parts[parts.length - 1];
 if (parts.length > 1) {
 for (var i = 0; i < parts.length - 1; i++) {
 var part = parts[i];
+if (array && part[0] == '#') {
+prop = Polymer.Collection.get(array).getItem(part);
+} else {
 prop = prop[part];
-if (array && parseInt(part) == part) {
+if (array && parseInt(part, 10) == part) {
 parts[i] = Polymer.Collection.get(array).getKey(prop);
+}
 }
 if (!prop) {
 return;
 }
 array = Array.isArray(prop) ? prop : null;
 }
-if (array && parseInt(last) == last) {
+if (array) {
 var coll = Polymer.Collection.get(array);
+if (last[0] == '#') {
+var key = last;
+var old = coll.getItem(key);
+last = array.indexOf(old);
+coll.setItem(key, value);
+} else if (parseInt(last, 10) == last) {
 var old = prop[last];
 var key = coll.getKey(old);
 parts[i] = key;
 coll.setItem(key, value);
 }
+}
 prop[last] = value;
 if (!root) {
-this.notifyPath(parts.join('.'), value);
+this._notifyPath(parts.join('.'), value);
 }
 } else {
 prop[path] = value;
 }
 },
 get: function (path, root) {
+return this._get(path, root);
+},
+_get: function (path, root, info) {
 var prop = root || this;
 var parts = this._getPathParts(path);
-var last = parts.pop();
-while (parts.length) {
-prop = prop[parts.shift()];
+var array;
+for (var i = 0; i < parts.length; i++) {
 if (!prop) {
 return;
 }
+var part = parts[i];
+if (array && part[0] == '#') {
+prop = Polymer.Collection.get(array).getItem(part);
+} else {
+prop = prop[part];
+if (info && array && parseInt(part, 10) == part) {
+parts[i] = Polymer.Collection.get(array).getKey(prop);
 }
-return prop[last];
+}
+array = Array.isArray(prop) ? prop : null;
+}
+if (info) {
+info.path = parts.join('.');
+}
+return prop;
 },
 _pathEffector: function (path, value) {
 var model = this._modelForPath(path);
@@ -4214,7 +4694,7 @@ this.notifyPath(this._fixPath(a, b, path), value);
 _fixPath: function (property, root, path) {
 return property + path.slice(root.length);
 },
-_notifyPath: function (path, value) {
+_notifyPathUp: function (path, value) {
 var rootName = this._modelForPath(path);
 var dashCaseName = Polymer.CaseMap.camelToDashCase(rootName);
 var eventName = dashCaseName + this._EVENT_CHANGED;
@@ -4228,47 +4708,62 @@ var dot = path.indexOf('.');
 return dot < 0 ? path : path.slice(0, dot);
 },
 _EVENT_CHANGED: '-changed',
+notifySplices: function (path, splices) {
+var info = {};
+var array = this._get(path, this, info);
+this._notifySplices(array, info.path, splices);
+},
+_notifySplices: function (array, path, splices) {
+var change = {
+keySplices: Polymer.Collection.applySplices(array, splices),
+indexSplices: splices
+};
+if (!array.hasOwnProperty('splices')) {
+Object.defineProperty(array, 'splices', {
+configurable: true,
+writable: true
+});
+}
+array.splices = change;
+this._notifyPath(path + '.splices', change);
+this._notifyPath(path + '.length', array.length);
+change.keySplices = null;
+change.indexSplices = null;
+},
 _notifySplice: function (array, path, index, added, removed) {
-var splices = [{
+this._notifySplices(array, path, [{
 index: index,
 addedCount: added,
 removed: removed,
 object: array,
 type: 'splice'
-}];
-var change = {
-keySplices: Polymer.Collection.applySplices(array, splices),
-indexSplices: splices
-};
-this.set(path + '.splices', change);
-if (added != removed.length) {
-this.notifyPath(path + '.length', array.length);
-}
-change.keySplices = null;
-change.indexSplices = null;
+}]);
 },
 push: function (path) {
-var array = this.get(path);
+var info = {};
+var array = this._get(path, this, info);
 var args = Array.prototype.slice.call(arguments, 1);
 var len = array.length;
 var ret = array.push.apply(array, args);
 if (args.length) {
-this._notifySplice(array, path, len, args.length, []);
+this._notifySplice(array, info.path, len, args.length, []);
 }
 return ret;
 },
 pop: function (path) {
-var array = this.get(path);
+var info = {};
+var array = this._get(path, this, info);
 var hadLength = Boolean(array.length);
 var args = Array.prototype.slice.call(arguments, 1);
 var ret = array.pop.apply(array, args);
 if (hadLength) {
-this._notifySplice(array, path, array.length, 0, [ret]);
+this._notifySplice(array, info.path, array.length, 0, [ret]);
 }
 return ret;
 },
 splice: function (path, start, deleteCount) {
-var array = this.get(path);
+var info = {};
+var array = this._get(path, this, info);
 if (start < 0) {
 start = array.length - Math.floor(-start);
 } else {
@@ -4281,28 +4776,49 @@ var args = Array.prototype.slice.call(arguments, 1);
 var ret = array.splice.apply(array, args);
 var addedCount = Math.max(args.length - 2, 0);
 if (addedCount || ret.length) {
-this._notifySplice(array, path, start, addedCount, ret);
+this._notifySplice(array, info.path, start, addedCount, ret);
 }
 return ret;
 },
 shift: function (path) {
-var array = this.get(path);
+var info = {};
+var array = this._get(path, this, info);
 var hadLength = Boolean(array.length);
 var args = Array.prototype.slice.call(arguments, 1);
 var ret = array.shift.apply(array, args);
 if (hadLength) {
-this._notifySplice(array, path, 0, 0, [ret]);
+this._notifySplice(array, info.path, 0, 0, [ret]);
 }
 return ret;
 },
 unshift: function (path) {
-var array = this.get(path);
+var info = {};
+var array = this._get(path, this, info);
 var args = Array.prototype.slice.call(arguments, 1);
 var ret = array.unshift.apply(array, args);
 if (args.length) {
-this._notifySplice(array, path, 0, args.length, []);
+this._notifySplice(array, info.path, 0, args.length, []);
 }
 return ret;
+},
+prepareModelNotifyPath: function (model) {
+this.mixin(model, {
+fire: Polymer.Base.fire,
+notifyPath: Polymer.Base.notifyPath,
+_get: Polymer.Base._get,
+_EVENT_CHANGED: Polymer.Base._EVENT_CHANGED,
+_notifyPath: Polymer.Base._notifyPath,
+_notifyPathUp: Polymer.Base._notifyPathUp,
+_pathEffector: Polymer.Base._pathEffector,
+_annotationPathEffect: Polymer.Base._annotationPathEffect,
+_complexObserverPathEffect: Polymer.Base._complexObserverPathEffect,
+_annotatedComputationPathEffect: Polymer.Base._annotatedComputationPathEffect,
+_computePathEffect: Polymer.Base._computePathEffect,
+_modelForPath: Polymer.Base._modelForPath,
+_pathMatchesEffect: Polymer.Base._pathMatchesEffect,
+_notifyBoundPaths: Polymer.Base._notifyBoundPaths,
+_getPathParts: Polymer.Base._getPathParts
+});
 }
 });
 }());
@@ -5510,6 +6026,7 @@ properties: { __hideTemplateChildren__: { observer: '_showHideChildren' } },
 _instanceProps: Polymer.nob,
 _parentPropPrefix: '_parent_',
 templatize: function (template) {
+this._templatized = template;
 if (!template._content) {
 template._content = template.content;
 }
@@ -5520,12 +6037,12 @@ return;
 }
 var archetype = Object.create(Polymer.Base);
 this._customPrepAnnotations(archetype, template);
+this._prepParentProperties(archetype, template);
 archetype._prepEffects();
 this._customPrepEffects(archetype);
 archetype._prepBehaviors();
 archetype._prepBindings();
-this._prepParentProperties(archetype, template);
-archetype._notifyPath = this._notifyPathImpl;
+archetype._notifyPathUp = this._notifyPathUpImpl;
 archetype._scopeElementClass = this._scopeElementClassImpl;
 archetype.listen = this._listenImpl;
 archetype._showHideChildren = this._showHideChildrenImpl;
@@ -5607,6 +6124,7 @@ delete parentProps[prop];
 proto = archetype._parentPropProto = Object.create(null);
 if (template != this) {
 Polymer.Bind.prepareModel(proto);
+Polymer.Base.prepareModelNotifyPath(proto);
 }
 for (prop in parentProps) {
 var parentProp = this._parentPropPrefix + prop;
@@ -5625,6 +6143,7 @@ Polymer.Bind.prepareInstance(template);
 template._forwardParentProp = this._forwardParentProp.bind(this);
 }
 this._extendTemplate(template, proto);
+template._pathEffector = this._pathEffectorImpl.bind(this);
 }
 },
 _createForwardPropEffector: function (prop) {
@@ -5635,7 +6154,7 @@ this._forwardParentProp(prop, value);
 _createHostPropEffector: function (prop) {
 var prefix = this._parentPropPrefix;
 return function (source, value) {
-this.dataHost[prefix + prop] = value;
+this.dataHost._templatized[prefix + prop] = value;
 };
 },
 _createInstancePropEffector: function (prop) {
@@ -5661,22 +6180,23 @@ _forwardInstancePath: function (inst, path, value) {
 },
 _forwardInstanceProp: function (inst, prop, value) {
 },
-_notifyPathImpl: function (path, value) {
+_notifyPathUpImpl: function (path, value) {
 var dataHost = this.dataHost;
 var dot = path.indexOf('.');
 var root = dot < 0 ? path : path.slice(0, dot);
 dataHost._forwardInstancePath.call(dataHost, this, path, value);
 if (root in dataHost._parentProps) {
-dataHost.notifyPath(dataHost._parentPropPrefix + path, value);
+dataHost._templatized.notifyPath(dataHost._parentPropPrefix + path, value);
 }
 },
-_pathEffector: function (path, value, fromAbove) {
+_pathEffectorImpl: function (path, value, fromAbove) {
 if (this._forwardParentPath) {
 if (path.indexOf(this._parentPropPrefix) === 0) {
-this._forwardParentPath(path.substring(8), value);
+var subPath = path.substring(this._parentPropPrefix.length);
+this._forwardParentPath(subPath, value);
 }
 }
-Polymer.Base._pathEffector.apply(this, arguments);
+Polymer.Base._pathEffector.call(this._templatized, path, value, fromAbove);
 },
 _constructorImpl: function (model, host) {
 this._rootDataHost = host._getRootDataHost();
@@ -5719,8 +6239,9 @@ return host._scopeElementClass(node, value);
 stamp: function (model) {
 model = model || {};
 if (this._parentProps) {
+var templatized = this._templatized;
 for (var prop in this._parentProps) {
-model[prop] = this[this._parentPropPrefix + prop];
+model[prop] = templatized[this._parentPropPrefix + prop];
 }
 }
 return new this.ctor(model, this);
@@ -5777,9 +6298,10 @@ this.omap.set(item, key);
 } else {
 this.pmap[item] = key;
 }
-return key;
+return '#' + key;
 },
 removeKey: function (key) {
+key = this._parseKey(key);
 this._removeFromMap(this.store[key]);
 delete this.store[key];
 },
@@ -5796,16 +6318,29 @@ this.removeKey(key);
 return key;
 },
 getKey: function (item) {
+var key;
 if (item && typeof item == 'object') {
-return this.omap.get(item);
+key = this.omap.get(item);
 } else {
-return this.pmap[item];
+key = this.pmap[item];
+}
+if (key != undefined) {
+return '#' + key;
 }
 },
 getKeys: function () {
-return Object.keys(this.store);
+return Object.keys(this.store).map(function (key) {
+return '#' + key;
+});
+},
+_parseKey: function (key) {
+if (key[0] == '#') {
+return key.slice(1);
+}
+throw new Error('unexpected key ' + key);
 },
 setItem: function (key, item) {
+key = this._parseKey(key);
 var old = this.store[key];
 if (old) {
 this._removeFromMap(old);
@@ -5818,6 +6353,7 @@ this.pmap[item] = key;
 this.store[key] = item;
 },
 getItem: function (key) {
+key = this._parseKey(key);
 return this.store[key];
 },
 getItems: function () {
@@ -6211,7 +6747,7 @@ this.set('items.' + idx, value);
 },
 _forwardInstancePath: function (inst, path, value) {
 if (path.indexOf(this.as + '.') === 0) {
-this.notifyPath('items.' + inst.__key__ + '.' + path.slice(this.as.length + 1), value);
+this._notifyPath('items.' + inst.__key__ + '.' + path.slice(this.as.length + 1), value);
 }
 },
 _forwardParentProp: function (prop, value) {
@@ -6221,7 +6757,7 @@ inst.__setProperty(prop, value, true);
 },
 _forwardParentPath: function (path, value) {
 this._instances.forEach(function (inst) {
-inst.notifyPath(path, value, true);
+inst._notifyPath(path, value, true);
 }, this);
 },
 _forwardItemPath: function (path, value) {
@@ -6233,7 +6769,7 @@ var inst = this._instances[idx];
 if (inst) {
 if (dot >= 0) {
 path = this.as + '.' + path.substring(dot + 1);
-inst.notifyPath(path, value, true);
+inst._notifyPath(path, value, true);
 } else {
 inst.__setProperty(this.as, value, true);
 }
@@ -6285,6 +6821,7 @@ this.unlinkPaths('selected.' + i);
 }
 } else {
 this.unlinkPaths('selected');
+this.unlinkPaths('selectedItem');
 }
 if (this.multi) {
 if (!this.selected || this.selected.length) {
@@ -6328,7 +6865,7 @@ this.deselect(item);
 }
 } else {
 this.push('selected', item);
-skey = this._selectedColl.getKey(item);
+var skey = this._selectedColl.getKey(item);
 this.linkPaths('selected.' + skey, 'items.' + key);
 }
 } else {
@@ -6424,7 +6961,7 @@ this._instance[prop] = value;
 },
 _forwardParentPath: function (path, value) {
 if (this._instance) {
-this._instance.notifyPath(path, value, true);
+this._instance._notifyPath(path, value, true);
 }
 }
 });
@@ -6582,6 +7119,20 @@ if (Polymer.Bind) {
 // https://github.com/dart-lang/core-elements/issues/11
 </script>
 
+
+<!--
+The `<iron-flex-layout>` component provides simple ways to use [CSS flexible box layout](https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Flexible_boxes), also known as flexbox. This component provides two different ways to use flexbox:
+
+1. [Layout classes](https://github.com/PolymerElements/iron-flex-layout/tree/master/classes). The layout class stylesheet provides a simple set of class-based flexbox rules. Layout classes let you specify layout properties directly in markup.
+
+2. [Custom CSS mixins](https://github.com/PolymerElements/iron-flex-layout/blob/master/iron-flex-layout.html). The mixin stylesheet includes custom CSS mixins that can be applied inside a CSS rule using the `@apply` function.
+
+A complete [guide](https://elements.polymer-project.org/guides/flex-layout) to `<iron-flex-layout>` is available.
+
+@group Iron Elements
+@pseudoElement iron-flex-layout
+@demo demo/index.html
+-->
 
 <style>
   /* IE 10 support for HTML5 hidden attr */
@@ -8045,7 +8596,8 @@ Any number of components can use `<google-js-api>` elements, and the library wil
       'appPackageName': 'apppackagename',
       'clientId': 'clientid',
       'cookiePolicy': 'cookiepolicy',
-      'requestVisibleActions': 'requestvisibleactions'
+      'requestVisibleActions': 'requestvisibleactions',
+      'hostedDomain': 'hostedDomain'
     };
 
     /**
@@ -8129,6 +8681,50 @@ Any number of components can use `<google-js-api>` elements, and the library wil
           this._requestVisibleActions = val;
       },
 
+     /**
+       * oauth2 argument, set by google-signin-aware
+       */
+      _hostedDomain: '',
+
+      get hostedDomain() {
+        return this._hostedDomain;
+      },
+
+      set hostedDomain(val) {
+        if (this._hostedDomain && val && val != this._hostedDomain) {
+          throw new Error('hostedDomain cannot change. Values do not match. New: ' + val + ' Old: ' + this._hostedDomain);
+        }
+        if (val)
+          this._hostedDomain = val;
+      },
+
+      /** Is offline access currently enabled in the google-signin-aware element? */
+      _offline: false,
+
+      get offline() {
+        return this._offline;
+      },
+
+      set offline(val) {
+        this._offline = val;
+        this.updateAdditionalAuth();
+      },
+
+      /** Should we force a re-prompt for offline access? */
+      _offlineAlwaysPrompt: false,
+
+      get offlineAlwaysPrompt() {
+        return this._offlineAlwaysPrompt;
+      },
+
+      set offlineAlwaysPrompt(val) {
+        this._offlineAlwaysPrompt = val;
+        this.updateAdditionalAuth();
+      },
+
+      /** Have we already gotten offline access from Google during this session? */
+      offlineGranted: false,
+
       /** <google-js-api> */
       _apiLoader: null,
 
@@ -8174,7 +8770,8 @@ Any number of components can use `<google-js-api>` elements, and the library wil
         var auth = gapi.auth2.init({
           'client_id': this.clientId,
           'cookie_policy': this.cookiePolicy,
-          'scope': this.requestedScopes
+          'scope': this.requestedScopes,
+          'hosted_domain': this.hostedDomain
         });
 
         auth.currentUser.listen(this.handleUserUpdate.bind(this));
@@ -8208,6 +8805,12 @@ Any number of components can use `<google-js-api>` elements, and the library wil
         var response = newPrimaryUser.getAuthResponse();
         for (var i=0; i<this.signinAwares.length; i++) {
           this.signinAwares[i]._updateScopeStatus(response);
+        }
+      },
+
+      setOfflineCode: function(code) {
+        for (var i=0; i<this.signinAwares.length; i++) {
+          this.signinAwares[i]._updateOfflineCode(code);
         }
       },
 
@@ -8269,10 +8872,14 @@ Any number of components can use `<google-js-api>` elements, and the library wil
       /** update status of _needAdditionalAuth */
       updateAdditionalAuth: function() {
         var needMoreAuth = false;
-        for (var i=0; i<this._requestedScopeArray.length; i++) {
-          if (this._grantedScopeArray.indexOf(this._requestedScopeArray[i]) === -1) {
-            needMoreAuth = true;
-            break;
+        if ((this.offlineAlwaysPrompt || this.offline ) && !this.offlineGranted) {
+          needMoreAuth = true;
+        } else {
+          for (var i=0; i<this._requestedScopeArray.length; i++) {
+            if (this._grantedScopeArray.indexOf(this._requestedScopeArray[i]) === -1) {
+              needMoreAuth = true;
+              break;
+            }
           }
         }
         if (this._needAdditionalAuth != needMoreAuth) {
@@ -8359,15 +8966,40 @@ Any number of components can use `<google-js-api>` elements, and the library wil
 
         var promise;
         var user = gapi.auth2.getAuthInstance().currentUser.get();
-        if (user.getGrantedScopes()) {
-          // additional auth, skip multiple account dialog
-          promise = user.grant(params);
+        if (!(this.offline || this.offlineAlwaysPrompt)) {
+          if (user.getGrantedScopes()) {
+            // additional auth, skip multiple account dialog
+            promise = user.grant(params);
+          } else {
+            // initial signin
+            promise = gapi.auth2.getAuthInstance().signIn(params);
+          }
         } else {
-          // initial signin
-          promise = gapi.auth2.getAuthInstance().signIn(params);
+          params.redirect_uri = 'postmessage';
+          if (this.offlineAlwaysPrompt) {
+            params.approval_prompt = 'force';
+          }
+
+          // Despite being documented at https://goo.gl/tiO0Bk
+          // It doesn't seem like user.grantOfflineAccess() actually exists in
+          // the current version of the Google Sign-In JS client we're using
+          // through GoogleWebComponents. So in the offline case, we will not
+          // distinguish between a first auth and an additional one.
+          promise = gapi.auth2.getAuthInstance().grantOfflineAccess(params);
         }
         promise.then(
-          function success(newUser) {
+          function success(response) {
+            // If login was offline, response contains one string "code"
+            // Otherwise it contains the user object already
+            var newUser;
+            if (response.code) {
+              AuthEngine.offlineGranted = true;
+              newUser = gapi.auth2.getAuthInstance().currentUser.get();
+              AuthEngine.setOfflineCode(response.code);
+            } else {
+              newUser = response;
+            }
+
             var authResponse = newUser.getAuthResponse();
             // Let the current user listener trigger the changes.
           },
@@ -8407,13 +9039,38 @@ The `scopes` attribute allows you to specify which scope permissions are require
 (e.g do you want to allow interaction with the Google Drive API).
 
 The `google-signin-aware-success` event is triggered when a user successfully
-authenticates. The `google-signin-aware-signed-out` event is triggered
-when a user explicitely signs out via the google-signin element.
+authenticates. If either `offline` or `offlineAlwaysPrompt` is set to true, successful
+authentication will also trigger the `google-signin-offline-success`event.
+The `google-signin-aware-signed-out` event is triggered when a user explicitly
+signs out via the google-signin element.
 
 You can bind to `isAuthorized` property to monitor authorization state.
 ##### Example
 
     <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
+
+
+##### Example with offline
+    <template id="awareness" is="dom-bind">
+      <google-signin-aware
+          scopes="https://www.googleapis.com/auth/drive"
+          offline
+          on-google-signin-aware-success="handleSignin"
+          on-google-signin-offline-success="handleOffline"></google-signin-aware>
+    <\/template>
+    <script>
+      var aware = document.querySelector('#awareness');
+      aware.handleSignin = function(response) {
+        var user = gapi.auth2.getAuthInstance().currentUser.get();
+        console.log('User name: ' + user.getBasicProfile().getName());
+      };
+      aware.handleOffline = function(response) {
+        console.log('Offline code received: ' + response.detail.code);
+        // Here you would POST response.detail.code to your webserver, which can
+        // exchange the authorization code for an access token. More info at:
+        // https://developers.google.com/identity/protocols/OAuth2WebServer
+      };
+    <\/script>
 */
     Polymer({
 
@@ -8423,6 +9080,13 @@ You can bind to `isAuthorized` property to monitor authorization state.
        * Fired when this scope has been authorized
        * @param {Object} result Authorization result.
        * @event google-signin-aware-success
+       */
+      /**
+       * Fired when an offline authorization is successful.
+       * @param {Object} detail
+       * @param {string} detail.code The one-time authorization code from Google.
+       *     Your application can exchange this for an `access_token` and `refresh_token`
+       * @event google-signin-offline-success
        */
       /**
        * Fired when this scope is not authorized
@@ -8464,6 +9128,39 @@ You can bind to `isAuthorized` property to monitor authorization state.
         requestVisibleActions: {
           type: String,
           observer: '_requestVisibleActionsChanged'
+        },
+
+        /**
+         * The Google Apps domain to which users must belong to sign in.
+         * See the relevant [docs](https://developers.google.com/identity/sign-in/web/reference) for more information.
+         */
+        hostedDomain: {
+          type: String,
+          observer: '_hostedDomainChanged'
+        },
+
+       /**
+         * Allows for offline `access_token` retrieval during the signin process.
+         * See also `offlineAlwaysPrompt`. You only need to set one of the two; if both
+         * are set, the behavior of `offlineAlwaysPrompt` will override `offline`.
+         */
+        offline: {
+          type: Boolean,
+          value: false,
+          observer: '_offlineChanged'
+        },
+
+        /**
+          * Works the same as `offline` with the addition that it will always
+          * force a re-prompt to the user, guaranteeing that you will get a
+          * refresh_token even if the user has already granted offline access to
+          * this application. You only need to set one of `offline` or
+          * `offlineAlwaysPrompt`, not both.
+          */
+        offlineAlwaysPrompt: {
+          type: Boolean,
+          value: false,
+          observer: '_offlineAlwaysPromptChanged'
         },
 
        /**
@@ -8549,6 +9246,18 @@ You can bind to `isAuthorized` property to monitor authorization state.
         AuthEngine.requestVisibleActions = newVal;
       },
 
+      _hostedDomainChanged: function(newVal, oldVal) {
+        AuthEngine.hostedDomain = newVal;
+      },
+
+      _offlineChanged: function(newVal, oldVal) {
+        AuthEngine.offline = newVal;
+      },
+
+      _offlineAlwaysPromptChanged: function(newVal, oldVal) {
+        AuthEngine.offlineAlwaysPrompt = newVal;
+      },
+
       _scopesChanged: function(newVal, oldVal) {
         AuthEngine.requestScopes(newVal);
         this._updateScopeStatus();
@@ -8564,6 +9273,12 @@ You can bind to `isAuthorized` property to monitor authorization state.
           else {
             this.fire('google-signin-aware-signed-out', user);
           }
+        }
+      },
+
+      _updateOfflineCode: function(code) {
+        if (code) {
+          this.fire('google-signin-offline-success', {code: code});
         }
       }
     });
@@ -9202,7 +9917,7 @@ Dynamically loads the Google Maps JavaScript API, firing the `api-load` event wh
 
 Any number of components can use `<google-maps-api>` elements, and the library will only be loaded once.
 
-@blurb Element wrapper around Google Maps API.
+@summary Element wrapper around Google Maps API.
 
  */
   Polymer({
@@ -9234,15 +9949,6 @@ Any number of components can use `<google-maps-api>` elements, and the library w
        * If set, a Client ID will take precedence over an API Key.
        */
       clientId: {
-        type: String,
-        value: ''
-      },
-
-      /**
-       * The libraries to load with this map. For more information
-       * see https://developers.google.com/maps/documentation/javascript/libraries.
-       */
-      libraries: {
         type: String,
         value: ''
       },
@@ -9290,16 +9996,15 @@ Any number of components can use `<google-maps-api>` elements, and the library w
       /** @private */
       libraryUrl: {
         type: String,
-        computed: '_computeUrl(mapsUrl, version, libraries, apiKey, clientId, language, signedIn)'
+        computed: '_computeUrl(mapsUrl, version, apiKey, clientId, language, signedIn)'
       }
     },
 
-    _computeUrl: function(mapsUrl, version, libraries, apiKey, clientId, language, signedIn) {
+    _computeUrl: function(mapsUrl, version, apiKey, clientId, language, signedIn) {
       var url = mapsUrl + '&v=' + version;
 
-      if (libraries) {
-        url += "&libraries=" + libraries;
-      }
+      // Always load all Maps API libraries.
+      url += '&libraries=drawing,geometry,places,visualization';
 
       if (apiKey && !clientId) {
         url += '&key=' + apiKey;
@@ -9326,6 +10031,622 @@ Any number of components can use `<google-maps-api>` elements, and the library w
       return google.maps;
     }
   });
+</script>
+
+
+
+
+
+<script>
+
+  /**
+   * @param {!Function} selectCallback
+   * @constructor
+   */
+  Polymer.IronSelection = function(selectCallback) {
+    this.selection = [];
+    this.selectCallback = selectCallback;
+  };
+
+  Polymer.IronSelection.prototype = {
+
+    /**
+     * Retrieves the selected item(s).
+     *
+     * @method get
+     * @returns Returns the selected item(s). If the multi property is true,
+     * `get` will return an array, otherwise it will return
+     * the selected item or undefined if there is no selection.
+     */
+    get: function() {
+      return this.multi ? this.selection.slice() : this.selection[0];
+    },
+
+    /**
+     * Clears all the selection except the ones indicated.
+     *
+     * @method clear
+     * @param {Array} excludes items to be excluded.
+     */
+    clear: function(excludes) {
+      this.selection.slice().forEach(function(item) {
+        if (!excludes || excludes.indexOf(item) < 0) {
+          this.setItemSelected(item, false);
+        }
+      }, this);
+    },
+
+    /**
+     * Indicates if a given item is selected.
+     *
+     * @method isSelected
+     * @param {*} item The item whose selection state should be checked.
+     * @returns Returns true if `item` is selected.
+     */
+    isSelected: function(item) {
+      return this.selection.indexOf(item) >= 0;
+    },
+
+    /**
+     * Sets the selection state for a given item to either selected or deselected.
+     *
+     * @method setItemSelected
+     * @param {*} item The item to select.
+     * @param {boolean} isSelected True for selected, false for deselected.
+     */
+    setItemSelected: function(item, isSelected) {
+      if (item != null) {
+        if (isSelected) {
+          this.selection.push(item);
+        } else {
+          var i = this.selection.indexOf(item);
+          if (i >= 0) {
+            this.selection.splice(i, 1);
+          }
+        }
+        if (this.selectCallback) {
+          this.selectCallback(item, isSelected);
+        }
+      }
+    },
+
+    /**
+     * Sets the selection state for a given item. If the `multi` property
+     * is true, then the selected state of `item` will be toggled; otherwise
+     * the `item` will be selected.
+     *
+     * @method select
+     * @param {*} item The item to select.
+     */
+    select: function(item) {
+      if (this.multi) {
+        this.toggle(item);
+      } else if (this.get() !== item) {
+        this.setItemSelected(this.get(), false);
+        this.setItemSelected(item, true);
+      }
+    },
+
+    /**
+     * Toggles the selection state for `item`.
+     *
+     * @method toggle
+     * @param {*} item The item to toggle.
+     */
+    toggle: function(item) {
+      this.setItemSelected(item, !this.isSelected(item));
+    }
+
+  };
+
+</script>
+
+
+
+
+
+<script>
+
+  /** @polymerBehavior */
+  Polymer.IronSelectableBehavior = {
+
+      /**
+       * Fired when iron-selector is activated (selected or deselected).
+       * It is fired before the selected items are changed.
+       * Cancel the event to abort selection.
+       *
+       * @event iron-activate
+       */
+
+      /**
+       * Fired when an item is selected
+       *
+       * @event iron-select
+       */
+
+      /**
+       * Fired when an item is deselected
+       *
+       * @event iron-deselect
+       */
+
+      /**
+       * Fired when the list of selectable items changes (e.g., items are
+       * added or removed). The detail of the event is a list of mutation
+       * records that describe what changed.
+       *
+       * @event iron-items-changed
+       */
+
+    properties: {
+
+      /**
+       * If you want to use the attribute value of an element for `selected` instead of the index,
+       * set this to the name of the attribute.
+       */
+      attrForSelected: {
+        type: String,
+        value: null
+      },
+
+      /**
+       * Gets or sets the selected element. The default is to use the index of the item.
+       */
+      selected: {
+        type: String,
+        notify: true
+      },
+
+      /**
+       * Returns the currently selected item.
+       */
+      selectedItem: {
+        type: Object,
+        readOnly: true,
+        notify: true
+      },
+
+      /**
+       * The event that fires from items when they are selected. Selectable
+       * will listen for this event from items and update the selection state.
+       * Set to empty string to listen to no events.
+       */
+      activateEvent: {
+        type: String,
+        value: 'tap',
+        observer: '_activateEventChanged'
+      },
+
+      /**
+       * This is a CSS selector string.  If this is set, only items that match the CSS selector
+       * are selectable.
+       */
+      selectable: String,
+
+      /**
+       * The class to set on elements when selected.
+       */
+      selectedClass: {
+        type: String,
+        value: 'iron-selected'
+      },
+
+      /**
+       * The attribute to set on elements when selected.
+       */
+      selectedAttribute: {
+        type: String,
+        value: null
+      },
+
+      /**
+       * The set of excluded elements where the key is the `localName`
+       * of the element that will be ignored from the item list.
+       *
+       * @type {object}
+       * @default {template: 1}
+       */
+      _excludedLocalNames: {
+        type: Object,
+        value: function() {
+          return {
+            'template': 1
+          };
+        }
+      }
+    },
+
+    observers: [
+      '_updateSelected(attrForSelected, selected)'
+    ],
+
+    created: function() {
+      this._bindFilterItem = this._filterItem.bind(this);
+      this._selection = new Polymer.IronSelection(this._applySelection.bind(this));
+      // TODO(cdata): When polymer/polymer#2535 lands, we do not need to do this
+      // book keeping anymore:
+      this.__listeningForActivate = false;
+    },
+
+    attached: function() {
+      this._observer = this._observeItems(this);
+      this._contentObserver = this._observeContent(this);
+      if (!this.selectedItem && this.selected) {
+        this._updateSelected(this.attrForSelected,this.selected)
+      }
+      this._addListener(this.activateEvent);
+    },
+
+    detached: function() {
+      if (this._observer) {
+        this._observer.disconnect();
+      }
+      if (this._contentObserver) {
+        this._contentObserver.disconnect();
+      }
+      this._removeListener(this.activateEvent);
+    },
+
+    /**
+     * Returns an array of selectable items.
+     *
+     * @property items
+     * @type Array
+     */
+    get items() {
+      var nodes = Polymer.dom(this).queryDistributedElements(this.selectable || '*');
+      return Array.prototype.filter.call(nodes, this._bindFilterItem);
+    },
+
+    /**
+     * Returns the index of the given item.
+     *
+     * @method indexOf
+     * @param {Object} item
+     * @returns Returns the index of the item
+     */
+    indexOf: function(item) {
+      return this.items.indexOf(item);
+    },
+
+    /**
+     * Selects the given value.
+     *
+     * @method select
+     * @param {string} value the value to select.
+     */
+    select: function(value) {
+      this.selected = value;
+    },
+
+    /**
+     * Selects the previous item.
+     *
+     * @method selectPrevious
+     */
+    selectPrevious: function() {
+      var length = this.items.length;
+      var index = (Number(this._valueToIndex(this.selected)) - 1 + length) % length;
+      this.selected = this._indexToValue(index);
+    },
+
+    /**
+     * Selects the next item.
+     *
+     * @method selectNext
+     */
+    selectNext: function() {
+      var index = (Number(this._valueToIndex(this.selected)) + 1) % this.items.length;
+      this.selected = this._indexToValue(index);
+    },
+
+    _addListener: function(eventName) {
+      if (!this.isAttached || this.__listeningForActivate) {
+        return;
+      }
+
+      this.__listeningForActivate = true;
+      this.listen(this, eventName, '_activateHandler');
+    },
+
+    _removeListener: function(eventName) {
+      this.unlisten(this, eventName, '_activateHandler');
+      this.__listeningForActivate = false;
+    },
+
+    _activateEventChanged: function(eventName, old) {
+      this._removeListener(old);
+      this._addListener(eventName);
+    },
+
+    _updateSelected: function() {
+      this._selectSelected(this.selected);
+    },
+
+    _selectSelected: function(selected) {
+      this._selection.select(this._valueToItem(this.selected));
+    },
+
+    _filterItem: function(node) {
+      return !this._excludedLocalNames[node.localName];
+    },
+
+    _valueToItem: function(value) {
+      return (value == null) ? null : this.items[this._valueToIndex(value)];
+    },
+
+    _valueToIndex: function(value) {
+      if (this.attrForSelected) {
+        for (var i = 0, item; item = this.items[i]; i++) {
+          if (this._valueForItem(item) == value) {
+            return i;
+          }
+        }
+      } else {
+        return Number(value);
+      }
+    },
+
+    _indexToValue: function(index) {
+      if (this.attrForSelected) {
+        var item = this.items[index];
+        if (item) {
+          return this._valueForItem(item);
+        }
+      } else {
+        return index;
+      }
+    },
+
+    _valueForItem: function(item) {
+      return item[this.attrForSelected] || item.getAttribute(this.attrForSelected);
+    },
+
+    _applySelection: function(item, isSelected) {
+      if (this.selectedClass) {
+        this.toggleClass(this.selectedClass, isSelected, item);
+      }
+      if (this.selectedAttribute) {
+        this.toggleAttribute(this.selectedAttribute, isSelected, item);
+      }
+      this._selectionChange();
+      this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+    },
+
+    _selectionChange: function() {
+      this._setSelectedItem(this._selection.get());
+    },
+
+    // observe content changes under the given node.
+    _observeContent: function(node) {
+      var content = node.querySelector('content');
+      if (content && content.parentElement === node) {
+        return this._observeItems(node.domHost);
+      }
+    },
+
+    // observe items change under the given node.
+    _observeItems: function(node) {
+      // TODO(cdata): Update this when we get distributed children changed.
+      var observer = new MutationObserver(function(mutations) {
+        // Let other interested parties know about the change so that
+        // we don't have to recreate mutation observers everywher.
+        this.fire('iron-items-changed', mutations, {
+          bubbles: false,
+          cancelable: false
+        });
+
+        if (this.selected != null) {
+          this._updateSelected();
+        }
+      }.bind(this));
+      observer.observe(node, {
+        childList: true,
+        subtree: true
+      });
+      return observer;
+    },
+
+    _activateHandler: function(e) {
+      var t = e.target;
+      var items = this.items;
+      while (t && t != this) {
+        var i = items.indexOf(t);
+        if (i >= 0) {
+          var value = this._indexToValue(i);
+          this._itemActivate(value, t);
+          return;
+        }
+        t = t.parentNode;
+      }
+    },
+
+    _itemActivate: function(value, item) {
+      if (!this.fire('iron-activate',
+          {selected: value, item: item}, {cancelable: true}).defaultPrevented) {
+        this.select(value);
+      }
+    }
+
+  };
+
+</script>
+
+
+
+
+
+
+<script>
+  /** @polymerBehavior Polymer.IronMultiSelectableBehavior */
+  Polymer.IronMultiSelectableBehaviorImpl = {
+    properties: {
+
+      /**
+       * If true, multiple selections are allowed.
+       */
+      multi: {
+        type: Boolean,
+        value: false,
+        observer: 'multiChanged'
+      },
+
+      /**
+       * Gets or sets the selected elements. This is used instead of `selected` when `multi`
+       * is true.
+       */
+      selectedValues: {
+        type: Array,
+        notify: true
+      },
+
+      /**
+       * Returns an array of currently selected items.
+       */
+      selectedItems: {
+        type: Array,
+        readOnly: true,
+        notify: true
+      },
+
+    },
+
+    observers: [
+      '_updateSelected(attrForSelected, selectedValues)'
+    ],
+
+    /**
+     * Selects the given value. If the `multi` property is true, then the selected state of the
+     * `value` will be toggled; otherwise the `value` will be selected.
+     *
+     * @method select
+     * @param {string} value the value to select.
+     */
+    select: function(value) {
+      if (this.multi) {
+        if (this.selectedValues) {
+          this._toggleSelected(value);
+        } else {
+          this.selectedValues = [value];
+        }
+      } else {
+        this.selected = value;
+      }
+    },
+
+    multiChanged: function(multi) {
+      this._selection.multi = multi;
+    },
+
+    _updateSelected: function() {
+      if (this.multi) {
+        this._selectMulti(this.selectedValues);
+      } else {
+        this._selectSelected(this.selected);
+      }
+    },
+
+    _selectMulti: function(values) {
+      this._selection.clear();
+      if (values) {
+        for (var i = 0; i < values.length; i++) {
+          this._selection.setItemSelected(this._valueToItem(values[i]), true);
+        }
+      }
+    },
+
+    _selectionChange: function() {
+      var s = this._selection.get();
+      if (this.multi) {
+        this._setSelectedItems(s);
+      } else {
+        this._setSelectedItems([s]);
+        this._setSelectedItem(s);
+      }
+    },
+
+    _toggleSelected: function(value) {
+      var i = this.selectedValues.indexOf(value);
+      var unselected = i < 0;
+      if (unselected) {
+        this.push('selectedValues',value);
+      } else {
+        this.splice('selectedValues',i,1);
+      }
+      this._selection.setItemSelected(this._valueToItem(value), unselected);
+    }
+  };
+
+  /** @polymerBehavior */
+  Polymer.IronMultiSelectableBehavior = [
+    Polymer.IronSelectableBehavior,
+    Polymer.IronMultiSelectableBehaviorImpl
+  ];
+
+</script>
+
+
+
+
+
+
+<script>
+  /**
+  `iron-selector` is an element which can be used to manage a list of elements
+  that can be selected.  Tapping on the item will make the item selected.  The `selected` indicates
+  which item is being selected.  The default is to use the index of the item.
+
+  Example:
+
+      <iron-selector selected="0">
+        <div>Item 1</div>
+        <div>Item 2</div>
+        <div>Item 3</div>
+      </iron-selector>
+
+  If you want to use the attribute value of an element for `selected` instead of the index,
+  set `attrForSelected` to the name of the attribute.  For example, if you want to select item by
+  `name`, set `attrForSelected` to `name`.
+
+  Example:
+
+      <iron-selector attr-for-selected="name" selected="foo">
+        <div name="foo">Foo</div>
+        <div name="bar">Bar</div>
+        <div name="zot">Zot</div>
+      </iron-selector>
+
+  `iron-selector` is not styled. Use the `iron-selected` CSS class to style the selected element.
+
+  Example:
+
+      <style>
+        .iron-selected {
+          background: #eee;
+        }
+      </style>
+
+      ...
+
+      <iron-selector selected="0">
+        <div>Item 1</div>
+        <div>Item 2</div>
+        <div>Item 3</div>
+      </iron-selector>
+
+  @demo demo/index.html
+  */
+
+  Polymer({
+
+    is: 'iron-selector',
+
+    behaviors: [
+      Polymer.IronMultiSelectableBehavior
+    ]
+
+  });
+
 </script>
 
 
@@ -9372,8 +10693,23 @@ child of `google-map`.
 </dom-module>
 
 <script>
-
 (function() {
+
+  function setupDragHandler_() {
+    if (this.draggable) {
+      this.dragHandler_ = google.maps.event.addListener(
+          this.marker, 'dragend', onDragEnd_.bind(this));
+    } else {
+      google.maps.event.removeListener(this.dragHandler_);
+      this.dragHandler_ = null;
+    }
+  }
+
+  function onDragEnd_(e, details, sender) {
+    this.latitude = e.latLng.lat();
+    this.longitude = e.latLng.lng();
+  }
+
   Polymer({
 
     is: 'google-map-marker',
@@ -9383,45 +10719,63 @@ child of `google-map`.
      * @param {google.maps.MouseEvent} event The mouse event.
      * @event google-map-marker-click
      */
+
     /**
      * Fired when the marker icon was double clicked. Requires the clickEvents attribute to be true.
      * @param {google.maps.MouseEvent} event The mouse event.
      * @event google-map-marker-dblclick
      */
+
     /**
      * Fired for a mousedown on the marker. Requires the mouseEvents attribute to be true.
      * @event google-map-marker-mousedown
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired when the DOM `mousemove` event is fired on the marker. Requires the mouseEvents
      * attribute to be true.
      * @event google-map-marker-mousemove
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired when the mouse leaves the area of the marker icon. Requires the mouseEvents attribute to be
      * true.
      * @event google-map-marker-mouseout
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired when the mouse enters the area of the marker icon. Requires the mouseEvents attribute to be
      * true.
      * @event google-map-marker-mouseover
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired for a mouseup on the marker. Requires the mouseEvents attribute to be true.
      *
      * @event google-map-marker-mouseup
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired for a rightclick on the marker. Requires the clickEvents attribute to be true.
      * @event google-map-marker-rightclick
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
+    /**
+     * Fired when an infowindow is opened.
+     * @event google-map-marker-open
+     */
+
+    /**
+     * Fired when the close button of the infowindow is pressed.
+     * @event google-map-marker-close
+     */
+
     properties: {
       /**
        * A Google Maps marker object.
@@ -9491,6 +10845,7 @@ child of `google-map`.
         value: null,
         reflectToAttribute: true
       },
+
       /**
        * The marker's latitude coordinate.
        */
@@ -9498,6 +10853,25 @@ child of `google-map`.
         type: Number,
         value: null,
         reflectToAttribute: true
+      },
+
+      /**
+       * A animation for the marker. "DROP" or "BOUNCE". See
+       * https://developers.google.com/maps/documentation/javascript/examples/marker-animations.
+       */
+      animation: {
+        type: String,
+        value: null,
+        observer: '_animationChanged'
+      },
+
+      /**
+       * Specifies whether the InfoWindow is open or not
+       */
+      open: {
+        type: Boolean,
+        value: false,
+        observer: '_openChanged'
       }
     },
 
@@ -9561,6 +10935,12 @@ child of `google-map`.
       }
     },
 
+    _animationChanged: function() {
+      if (this.marker) {
+        this.marker.setAnimation(google.maps.Animation[this.animation]);
+      }
+    },
+
     _iconChanged: function() {
       if (this.marker) {
         this.marker.setIcon(this.icon);
@@ -9600,16 +10980,33 @@ child of `google-map`.
         if (!this.info) {
           // Create a new infowindow
           this.info = new google.maps.InfoWindow();
-          this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
-            this.info.open(this.map, this.marker);
+          this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+            this.open = true;
+          }.bind(this));
+
+          this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
+            this.open = false;
           }.bind(this));
         }
         this.info.setContent(content);
       } else {
         if (this.info) {
           // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
-          google.maps.event.removeListener(this.infoHandler_);
+          google.maps.event.removeListener(this.openInfoHandler_);
+          google.maps.event.removeListener(this.closeInfoHandler_);
           this.info = null;
+        }
+      }
+    },
+
+    _openChanged: function() {
+      if (this.info) {
+        if (this.open) {
+          this.info.open(this.map, this.marker);
+          this.fire('google-map-marker-open');
+        } else {
+          this.info.close();
+          this.fire('google-map-marker-close');
         }
       }
     },
@@ -9623,6 +11020,7 @@ child of `google-map`.
           lng: parseFloat(this.longitude)
         },
         title: this.title,
+        animation: google.maps.Animation[this.animation],
         draggable: this.draggable,
         visible: !this.hidden,
         icon: this.icon,
@@ -9632,6 +11030,7 @@ child of `google-map`.
       this._clickEventsChanged();
       this._contentChanged();
       this._mouseEventsChanged();
+      this._openChanged();
       setupDragHandler_.bind(this)();
     },
 
@@ -9669,22 +11068,9 @@ child of `google-map`.
     }
   });
 
-  function setupDragHandler_() {
-    if (this.draggable) {
-      this.dragHandler_ = google.maps.event.addListener(
-          this.marker, 'dragend', onDragEnd_.bind(this));
-    } else {
-      google.maps.event.removeListener(this.dragHandler_);
-      this.dragHandler_ = null;
-    }
-  }
-
-  function onDragEnd_(e, details, sender) {
-    this.latitude = e.latLng.lat();
-    this.longitude = e.latLng.lng();
-  }
 })();
 </script>
+
 
 
 
@@ -9726,7 +11112,7 @@ The `google-map` element renders a Google Map.
 
 <b>Example</b> - with Google directions, using data-binding inside another Polymer element
 
-    <google-map map="{{map}}" libraries="places"></google-map>
+    <google-map map="{{map}}"></google-map>
     <google-map-directions map="{{map}}"
         start-address="San Francisco" end-address="Mountain View">
     </google-map-directions>
@@ -9753,12 +11139,14 @@ The `google-map` element renders a Google Map.
 
   </style>
   <template>
-    <google-maps-api id="api" api-key="[[apiKey]]" client-id="[[clientId]]" version="[[version]]" libraries="[[libraries]]" signed-in="[[signedIn]]" language="[[language]]" on-api-load="_mapApiLoaded"></google-maps-api>
+    <google-maps-api id="api" api-key="[[apiKey]]" client-id="[[clientId]]" version="[[version]]" signed-in="[[signedIn]]" language="[[language]]" on-api-load="_mapApiLoaded"></google-maps-api>
 
     <div id="map"></div>
 
-    <content id="markers" select="google-map-marker"></content>
-
+    <iron-selector id="selector" multi="[[!singleInfoWindow]]" selected-attribute="open" activate-event="google-map-marker-open" on-google-map-marker-close="_deselectMarker">
+      <content id="markers" select="google-map-marker"></content>
+    </iron-selector>
+    <content id="objects" select="*"></content>
   </template>
 </dom-module>
 
@@ -9848,16 +11236,6 @@ The `google-map` element renders a Google Map.
         type: Object,
         notify: true,
         value: null
-      },
-
-      /**
-       * A comma separated list (e.g. "places,geometry") of libraries to load
-       * with this map. Defaults to "". For more information see
-       * https://developers.google.com/maps/documentation/javascript/libraries.
-       */
-      libraries: {
-        type: String,
-        value: ''
       },
 
       /**
@@ -10032,8 +11410,24 @@ The `google-map` element renders a Google Map.
         type: Array,
         value: function() { return []; },
         readOnly: true
-      }
+      },
 
+      /**
+       * The non-marker objects on the map.
+       */
+      objects: {
+        type: Array,
+        value: function() { return []; },
+        readOnly: true
+      },
+
+      /**
+       * If set, all other info windows on markers are closed when opening a new one.
+       */
+      singleInfoWindow: {
+        type: Boolean,
+        value: false
+      }
     },
 
     behaviors: [
@@ -10057,6 +11451,10 @@ The `google-map` element renders a Google Map.
         this._mutationObserver.disconnect();
         this._mutationObserver = null;
       }
+      if (this._objectsMutationObserver) {
+        this._objectsMutationObserver.disconnect();
+        this._objectsMutationObserver = null;
+      }
     },
 
     _initGMap: function() {
@@ -10075,6 +11473,7 @@ The `google-map` element renders a Google Map.
       this._updateCenter();
       this._loadKml();
       this._updateMarkers();
+      this._updateObjects();
       this._addMapListeners();
       this.fire('google-map-ready');
     },
@@ -10107,14 +11506,22 @@ The `google-map` element renders a Google Map.
       return mapOptions;
     },
 
-    // watch for future updates
+    _attachChildrenToMap: function(children) {
+      if (this.map) {
+        for (var i = 0, child; child = children[i]; ++i) {
+          child.map = this.map;
+        }
+      }
+    },
+
+    // watch for future updates to marker objects
     _observeMarkers: function() {
       // Watch for future updates.
       if (this._mutationObserver) {
         return;
       }
-      this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
-      this._mutationObserver.observe(this, {
+      this._mutationObserver = new MutationObserver(this._updateMarkers.bind(this));
+      this._mutationObserver.observe(this.$.selector, {
         childList: true
       });
     },
@@ -10142,14 +11549,42 @@ The `google-map` element renders a Google Map.
       this.markers = this._setMarkers(newMarkers);
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
-      if (this.markers.length && this.map) {
-        for (var i = 0, m; m = this.markers[i]; ++i) {
-          m.map = this.map;
-        }
-      }
+      this._attachChildrenToMap(this.markers);
       if (this.fitToMarkers) {
         this._fitToMarkersChanged();
       }
+    },
+
+    // watch for future updates to non-marker objects
+    _observeObjects: function() {
+      if (this._objectsMutationObserver) {
+        return;
+      }
+      this._objectsMutationObserver = new MutationObserver(this._updateObjects.bind(this));
+      this._objectsMutationObserver.observe(this, {
+        childList: true
+      });
+    },
+
+    _updateObjects: function() {
+      var newObjects = Array.prototype.slice.call(
+          Polymer.dom(this.$.objects).getDistributedNodes());
+
+      // Do not recompute if objects have not been added or removed.
+      if (newObjects.length === this.objects.length) {
+        var added = newObjects.filter(function(o) {
+          return this.objects.indexOf(o) === -1;
+        }.bind(this));
+        if (added.length === 0) {
+          // Set up observer first time around.
+          this._observeObjects();
+          return;
+        }
+      }
+
+      this._observeObjects();
+      this._setObjects(newObjects);
+      this._attachChildrenToMap(this.objects);
     },
 
     /**
@@ -10328,7 +11763,7 @@ The `google-map` element renders a Google Map.
     _fitToMarkersChanged: function() {
       // TODO(ericbidelman): respect user's zoom level.
 
-      if (this.map && this.fitToMarkers) {
+      if (this.map && this.fitToMarkers && this.markers.length > 0) {
         var latLngBounds = new google.maps.LatLngBounds();
         for (var i = 0, m; m = this.markers[i]; ++i) {
           latLngBounds.extend(
@@ -10354,7 +11789,7 @@ The `google-map` element renders a Google Map.
       google.maps.event.addListener(this.map, 'zoom_changed', function() {
         this.zoom = this.map.getZoom();
       }.bind(this));
-      
+
       google.maps.event.addListener(this.map, 'maptypeid_changed', function() {
         this.mapType = this.map.getMapTypeId();
       }.bind(this));
@@ -10375,11 +11810,24 @@ The `google-map` element renders a Google Map.
       this._listeners[name] = google.maps.event.addListener(this.map, name, function(event) {
         this.fire('google-map-' + name, event);
       }.bind(this));
-    }
+    },
+
+   _deselectMarker: function(e, detail) {
+     // If singleInfoWindow is set, update iron-selector's selected attribute to be null.
+     // Else remove the marker from iron-selector's selected array.
+     var markerIndex = this.$.selector.indexOf(e.target);
+
+     if (this.singleInfoWindow) {
+      this.$.selector.selected = null;
+     } else if (this.$.selector.selectedValues) {
+      this.$.selector.selectedValues = this.$.selector.selectedValues.filter(function(i) {return i !== markerIndex});
+     }
+   }
 
   });
 
 </script>
+
 
 
 
@@ -11562,8 +13010,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
       /* @apply(--paper-font-common-nowrap); */
       white-space: nowrap;
       overflow: hidden;
@@ -11579,8 +13026,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
       /* @apply(--paper-font-common-nowrap); */
       white-space: nowrap;
       overflow: hidden;
@@ -11596,8 +13042,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
 
       font-size: 45px;
       font-weight: 400;
@@ -11609,8 +13054,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
 
       font-size: 34px;
       font-weight: 400;
@@ -11622,8 +13066,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
 
       font-size: 24px;
       font-weight: 400;
@@ -11635,8 +13078,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
       /* @apply(--paper-font-common-nowrap); */
       white-space: nowrap;
       overflow: hidden;
@@ -11651,8 +13093,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
 
       font-size: 16px;
       font-weight: 400;
@@ -11698,8 +13139,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
       /* @apply(--paper-font-common-nowrap); */
       white-space: nowrap;
       overflow: hidden;
@@ -11714,8 +13154,7 @@ The `google-map` element renders a Google Map.
       /* @apply(--paper-font-common-base) */
       font-family: 'Roboto', 'Noto', sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* @apply(--paper-font-common-expensive-kerning); */
-      text-rendering: optimizeLegibility;
+
       /* @apply(--paper-font-common-nowrap); */
       white-space: nowrap;
       overflow: hidden;
@@ -11756,6 +13195,30 @@ The `google-map` element renders a Google Map.
 
 
 
+
+<!--
+The `<paper-styles>` component provides simple ways to use Material Design CSS styles
+in your application. The following imports are available:
+
+1. [color.html](https://github.com/PolymerElements/paper-styles/blob/master/color.html):
+a complete list of the colors defined in the Material Design [palette](https://www.google.com/design/spec/style/color.html)
+
+2. [default-theme.html](https://github.com/PolymerElements/paper-styles/blob/master/default-theme.html): text,
+background and accent colors that match the default Material Design theme
+
+3. [shadow.html](https://github.com/PolymerElements/paper-styles/blob/master/shadow.html): Material Design
+[elevation](https://www.google.com/design/spec/what-is-material/elevation-shadows.html) and shadow styles
+
+4. [typography.html](https://github.com/PolymerElements/paper-styles/blob/master/typography.html):
+Material Design [font](http://www.google.com/design/spec/style/typography.html#typography-styles) styles and sizes
+
+5. [demo-pages.html](https://github.com/PolymerElements/paper-styles/blob/master/demo-pages.html): generic styles
+used in the PolymerElements demo pages
+
+@group Iron Elements
+@pseudoElement paper-styles
+@demo demo/index.html
+-->
 
 
 

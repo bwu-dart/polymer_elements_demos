@@ -5565,35 +5565,6 @@ C.al=function(getTagFallback) {
     hooks.getTag = getTagFallback;
   };
 }
-C.an=function(hooks) {
-  var userAgent = typeof navigator == "object" ? navigator.userAgent : "";
-  if (userAgent.indexOf("Trident/") == -1) return hooks;
-  var getTag = hooks.getTag;
-  var quickMap = {
-    "BeforeUnloadEvent": "Event",
-    "DataTransfer": "Clipboard",
-    "HTMLDDElement": "HTMLElement",
-    "HTMLDTElement": "HTMLElement",
-    "HTMLPhraseElement": "HTMLElement",
-    "Position": "Geoposition"
-  };
-  function getTagIE(o) {
-    var tag = getTag(o);
-    var newTag = quickMap[tag];
-    if (newTag) return newTag;
-    if (tag == "Object") {
-      if (window.DataView && (o instanceof window.DataView)) return "DataView";
-    }
-    return tag;
-  }
-  function prototypeForTagIE(tag) {
-    var constructor = window[tag];
-    if (constructor == null) return null;
-    return constructor.prototype;
-  }
-  hooks.getTag = getTagIE;
-  hooks.prototypeForTag = prototypeForTagIE;
-}
 C.am=function() {
   function typeNameInChrome(o) {
     var constructor = o.constructor;
@@ -5629,6 +5600,35 @@ C.am=function() {
     getUnknownTag: isBrowser ? getUnknownTagGenericBrowser : getUnknownTag,
     prototypeForTag: prototypeForTag,
     discriminator: discriminator };
+}
+C.an=function(hooks) {
+  var userAgent = typeof navigator == "object" ? navigator.userAgent : "";
+  if (userAgent.indexOf("Trident/") == -1) return hooks;
+  var getTag = hooks.getTag;
+  var quickMap = {
+    "BeforeUnloadEvent": "Event",
+    "DataTransfer": "Clipboard",
+    "HTMLDDElement": "HTMLElement",
+    "HTMLDTElement": "HTMLElement",
+    "HTMLPhraseElement": "HTMLElement",
+    "Position": "Geoposition"
+  };
+  function getTagIE(o) {
+    var tag = getTag(o);
+    var newTag = quickMap[tag];
+    if (newTag) return newTag;
+    if (tag == "Object") {
+      if (window.DataView && (o instanceof window.DataView)) return "DataView";
+    }
+    return tag;
+  }
+  function prototypeForTagIE(tag) {
+    var constructor = window[tag];
+    if (constructor == null) return null;
+    return constructor.prototype;
+  }
+  hooks.getTag = getTagIE;
+  hooks.prototypeForTag = prototypeForTagIE;
 }
 C.ao=function(hooks) {
   var getTag = hooks.getTag;
@@ -5722,9 +5722,9 @@ C.b2=new D.cC(!1,null,!1,null)
 C.l=H.c(I.o([C.b2]),[P.a])
 C.Y=new V.bK()
 C.e=H.c(I.o([C.Y]),[P.a])
+C.f=I.o([])
 C.b=H.c(I.o([]),[P.h])
 C.c=H.c(I.o([]),[P.a])
-C.f=I.o([])
 C.G=H.c(I.o([C.a]),[P.a])
 C.aX=I.o(["ready","attached","detached","attributeChanged","serialize","deserialize"])
 C.H=I.o(["registered","beforeRegister"])
@@ -5733,9 +5733,9 @@ C.K=new T.bc(null,"x-pretty-json",null)
 C.aZ=H.c(I.o([C.K]),[P.a])
 C.J=new T.bc(null,"firebase-element-demo",null)
 C.b_=H.c(I.o([C.J]),[P.a])
-C.k=new H.dj(0,{},C.f)
 C.aW=H.c(I.o([]),[P.aN])
 C.I=H.c(new H.dj(0,{},C.aW),[P.aN,null])
+C.k=new H.dj(0,{},C.f)
 C.b5=new H.cD("call")
 C.N=H.n("cb")
 C.b7=H.n("mx")
