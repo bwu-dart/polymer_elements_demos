@@ -10,7 +10,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 @HtmlImport('google_map_polys_demo.html')
 library polymer_elements_demos.web.google_map.google_map_polys_demo;
 
-import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/google_map.dart';
@@ -18,13 +17,13 @@ import 'package:polymer_elements/google_map_marker.dart';
 import 'package:polymer_elements/google_map_poly.dart';
 import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
-/// Silence analyzer [GoogleMap], [GoogleMapMarker], [GoogleMapPoly], [GoogleMapDirections], [DemoElements],
+/// Silence analyzer [GoogleMap], [GoogleMapMarker], [GoogleMapPoly], [DemoElements],
 @PolymerRegister('google-map-polys-demo')
 class GoogleMapPolysDemo extends PolymerElement {
   GoogleMapPolysDemo.created() : super.created();
 
-  const editingButtonCaptionEnabled = 'Disable editing';
-  const editingButtonCaptionDisabled = 'Enable editing';
+  static const editingButtonCaptionEnabled = 'Disable editing';
+  static const editingButtonCaptionDisabled = 'Enable editing';
 
   GoogleMapPoly get _poly => $$('google-map-poly');
 
@@ -34,8 +33,8 @@ class GoogleMapPolysDemo extends PolymerElement {
 
   @reflectable
   void toggleEdit([_, __]) {
-    poly.editable = !poly.editable;
-    set('toggleEditButtonCaption', poly.editable ? editingButtonCaptionEnabled : editingButtonCaptionDisabled);
+    _poly.editable = !_poly.editable;
+    set('toggleEditButtonCaption', _poly.editable ? editingButtonCaptionEnabled : editingButtonCaptionDisabled);
 
   }
 }

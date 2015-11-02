@@ -12,10 +12,15 @@ library polymer_elements_demos.web.web.paper_behaviors.my_paper_radio_button;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements/iron_checked_element_behavior.dart';
+import 'package:polymer_elements/paper_checked_element_behavior.dart';
 import 'package:polymer_elements/iron_button_state.dart';
 import 'package:polymer_elements/iron_control_state.dart';
 import 'package:polymer_elements/iron_a11y_keys_behavior.dart';
+import 'package:polymer_elements/paper_inky_focus_behavior.dart';
+import 'package:polymer_elements/iron_checked_element_behavior.dart';
+import 'package:polymer_elements/iron_form_element_behavior.dart';
+import 'package:polymer_elements/iron_validatable_behavior.dart';
+import 'package:polymer_elements/paper_ripple_behavior.dart';
 
 /// Silence analyzer
 @PolymerRegister('my-paper-radio-button')
@@ -24,7 +29,12 @@ class MyPaperRadioButton extends PolymerElement
         IronA11yKeysBehavior,
         IronButtonState,
         IronControlState,
-        CheckedElementBehavior {
+        PaperRippleBehavior,
+        PaperInkyFocusBehavior,
+        IronFormElementBehavior,
+        IronValidatableBehavior,
+        IronCheckedElementBehavior,
+        PaperCheckedElementBehavior {
   MyPaperRadioButton.created() : super.created();
 
   static var hostAttributes = {'role': 'radio'};

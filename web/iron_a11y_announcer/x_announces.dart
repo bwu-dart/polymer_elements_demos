@@ -31,8 +31,6 @@ class XAnnounces extends PolymerElement {
   @reflectable
   void onTapAnnounce([_, __]) {
     fire('iron-announce',
-    // TODO(zoechi) convertToJs shouldn't be needed anymore
-        detail: convertToJs({'text': ($['content'] as dom.Element).text}),
-        canBubble: true);
+        detail: {'text': ($['content'] as dom.Element).text}, canBubble: true);
   }
 }

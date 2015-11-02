@@ -43,7 +43,7 @@ class GoogleCastableVideoDemo extends PolymerElement {
   @reflectable
   cast([_, __]) => _video.launchSessionManager();
 
-  // TODO(zoechi) e.target.value doesn't always provide the value
+  // TODO(zoechi) e.target.value doesn't always provide the value #8
   // representing the mouse-up position. This might be a Dartium issue
   @reflectable
   void progressMouseUp(dom.Event e, [_]) {

@@ -23,7 +23,7 @@ transformers:
     entry_points:
     - web/index.html
     - tool/status.html
-    #- web/chartjs_element/index.html TODO(zoechi) element not available
+    #- web/chartjs_element/index.html TODO(zoechi) element not available #6
     - web/firebase_element/index.html
     - web/gold_cc_cvc_input/index.html
     - web/gold_cc_expiration_input/index.html
@@ -31,35 +31,35 @@ transformers:
     - web/gold_email_input/index.html
     - web/gold_phone_input/index.html
     - web/gold_zip_input/index.html
-    - web/google_analytics/index.html # TODO(zoechi) issues #67 (login)
-    - web/google_apis/index.html # TODO(zoechi) issues #65
-    - web/google_calendar/index.html # TODO(zoechi) issues #67
-    - web/google_castable_video/index.html # TODO(zoechi) issues (see code)
-    - web/google_chart/index.html # TODO(zoechi) issues #66
-    #- web/google_domain_user_picker/index.html TODO(zoechi) element not available
-    #- web/google_drive/index.html TODO(zoechi) element not available
+    - web/google_analytics/index.html # TODO(zoechi) issues #7
+    - web/google_apis/index.html
+    - web/google_calendar/index.html # TODO(zoechi) issues #7
+    - web/google_castable_video/index.html # TODO(zoechi) issues #8
+    - web/google_chart/index.html # TODO(zoechi) issues #9
+    #- web/google_domain_user_picker/index.html TODO(zoechi) element not available #6
+    #- web/google_drive/index.html TODO(zoechi) element not available #6
     - web/google_feeds/index.html
     - web/google_hangout_button/index.html
-    #- web/google_map/index.html # TODO(zoechi) #94
-    #- web/google_map/poly.html # TODO(zoechi) #94
-    #- web/google_recaptcha/index.html # TODO(zoechi) element not available
+    - web/google_map/index.html
+    - web/google_map/poly.html
+    #- web/google_recaptcha/index.html # TODO(zoechi) element not available #6
     - web/google_sheets/index.html
-    - web/google_signin/index.html # TODO(zoechi) issues #67
+    - web/google_signin/index.html # TODO(zoechi) issues #7
     - web/google_streetview_pano/index.html
     - web/google_url_shortener/index.html
     - web/google_youtube/index.html
     - web/google_youtube_upload/index.html
     - web/iron_a11y_announcer/index.html
     - web/iron_a11y_keys/index.html
-    - web/iron_a11y_keys_behavior/index.html # TODO(zoechi) issues #70
+    - web/iron_a11y_keys_behavior/index.html # TODO(zoechi) issues #10
     - web/iron_ajax/index.html
     - web/iron_autogrow_textarea/index.html
     - web/iron_behaviors/index.html
     - web/iron_checked_element_behavior/index.html
     - web/iron_collapse/index.html
-    - web/iron_component_page/index.html # TODO(zoechi) json file can't be loaded when run without `pub serve`, some path issue
+    - web/iron_component_page/index.html # TODO(zoechi) json file can't be loaded when run without `pub serve`, some path issue #11
     - web/iron_doc_viewer/index.html
-    - web/iron_dropdown/index.html # TODO(zoechi) doesn't work (position is off), I don't know how to port code in `expand_animation.dart`
+    - web/iron_dropdown/index.html # TODO(zoechi) doesn't work (position is off), I don't know how to port code in `expand_animation.dart` #12
     - web/iron_fit_behavior/index.html
     - web/iron_flex_layout/index.html
     - web/iron_form/index.html
@@ -71,14 +71,14 @@ transformers:
     - web/iron_image/index.html
     - web/iron_input/index.html
     - web/iron_jsonp_library/index.html
-    # - web/iron_label/index.html # TODO(zoechi) element not available
-    - web/iron_list/index.html # TODO(zoechi) items height wrong when demo is inside an element for 3 examples
-    - web/iron_list/collapse.html # TODO(zoechi) #95
+    # - web/iron_label/index.html # TODO(zoechi) element not available #6
+    - web/iron_list/index.html # TODO(zoechi) items height wrong when demo is inside an element for 3 examples #13
+    - web/iron_list/collapse.html # TODO(zoechi) #13
     - web/iron_list/external_content.html
-    - web/iron_list/selection.html # TODO(zoechi) clicking an item also adds it again to selected, even when it was already added
+    - web/iron_list/selection.html # TODO(zoechi) clicking an item also adds it again to selected, even when it was already added #13
     - web/iron_localstorage/index.html
     - web/iron_media_query/index.html
-    - web/iron_menu_behavior/index.html # TODO(zoechi) Dartium aw snaps when an item of a multi-select menu is clicked
+    - web/iron_menu_behavior/index.html
     - web/iron_meta/index.html
     - web/iron_overlay_behavior/index.html
     - web/iron_pages/index.html
@@ -99,21 +99,21 @@ transformers:
     #- web/neon_animation/reprojection/index.html
     #- web/neon_animation/tiles/index.html
     - web/paper_badge/index.html
-    #- web/paper_behaviors/index.html # TODO(zoechi) #96
+    # - web/paper_behaviors/index.html # TODO(zoechi) #15
     - web/paper_button/index.html
     - web/paper_card/index.html
     - web/paper_checkbox/index.html
-    - web/paper_dialog/index.html # TODO(zoechi) check button size (too big) after next elements update
+    - web/paper_dialog/index.html
     - web/paper_dialog_behavior/index.html
     - web/paper_dialog_scrollable/index.html
     - web/paper_drawer_panel/index.html
-    - web/paper_dropdown_menu/index.html # TODO(zoechi) weird layout on 2nd dropdown open
+    - web/paper_dropdown_menu/index.html
     - web/paper_fab/index.html
     - web/paper_header_panel/index.html
     - web/paper_input/index.html
     - web/paper_icon_button/index.html
     - web/paper_item/index.html
-    #- web/paper_listbox/index.html # TODO(zoechi) element not available #97
+    #- web/paper_listbox/index.html # TODO(zoechi) element not available #6
     - web/paper_material/index.html
     - web/paper_menu/index.html
     - web/paper_menu_button/index.html
@@ -121,21 +121,21 @@ transformers:
     - web/paper_radio_button/index.html
     - web/paper_radio_group/index.html
     - web/paper_ripple/index.html
-    - web/paper_scroll_header_panel/index.html # TODO(zoechi) demos 1-10
-    - web/paper_slider/index.html # TODO(zoechi) #74
+    - web/paper_scroll_header_panel/index.html # TODO(zoechi) demos 1-10#27
+    - web/paper_slider/index.html # TODO(zoechi) dart-lang/polymer_elements#74
     - web/paper_spinner/index.html
     - web/paper_styles/index.html
     - web/paper_tabs/index.html
-    - web/paper_toast/index.html # TODO(zoechi) shown mostly behind left drawer in all-demos
+    - web/paper_toast/index.html # TODO(zoechi) shown mostly behind left drawer in all-demos #26
     - web/paper_toggle_button/index.html # TODO(zoechi) labels are now show. I'll check again after a new versions of the elements is available
     - web/paper_toolbar/index.html
     - web/paper_tooltip/index.html # TODO(zoechi) rich text tooltips location wrong
-    #- web/platinum_bluetooth/index.html # TODO(zoechi) element not available
-    #- web/platinum_https_redirect/index.html # TODO(zoechi) element not available
-    #- web/platinum_push_messaging/index.html # TODO(zoechi) element not available
-    #- web/platinum_sw/index.html # TODO(zoechi) element not available
-    #- web/quick_element/index.html # TODO(zoechi) element not available
-    #- web/seed_element/index.html # TODO(zoechi) element not available
+    #- web/platinum_bluetooth/index.html # TODO(zoechi) element not available #6
+    #- web/platinum_https_redirect/index.html # TODO(zoechi) element not available #6
+    #- web/platinum_push_messaging/index.html # TODO(zoechi) element not available #6
+    #- web/platinum_sw/index.html # TODO(zoechi) element not available #6
+    #- web/quick_element/index.html # TODO(zoechi) element not available #6
+    #- web/seed_element/index.html # TODO(zoechi) element not available #6
 
 - reflectable:
     entry_points:
@@ -158,8 +158,8 @@ transformers:
     #- web/google_drive/index.dart
     - web/google_feeds/index.dart
     - web/google_hangout_button/index.dart
-    #- web/google_map/index.dart
-    #- web/google_map/poly.dart
+    - web/google_map/index.dart
+    - web/google_map/poly.dart
     #- web/google_recaptcha/index.dart
     - web/google_sheets/index.dart
     - web/google_signin/index.dart

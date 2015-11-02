@@ -16,12 +16,18 @@ import 'package:polymer_elements/paper_button_behavior.dart';
 import 'package:polymer_elements/iron_button_state.dart';
 import 'package:polymer_elements/iron_control_state.dart';
 import 'package:polymer_elements/iron_a11y_keys_behavior.dart';
-
+import 'package:polymer_elements/paper_ripple_behavior.dart';
 
 /// Silence analyzer
 /// Note: Name prefix `my-` added to disambiguate from
 ///   polymer_elements/paper_button
 @PolymerRegister('my-paper-button')
-class MyPaperButton extends PolymerElement with IronA11yKeysBehavior, IronButtonState, IronControlState, PaperButtonBehavior {
+class MyPaperButton extends PolymerElement
+    with
+        IronA11yKeysBehavior,
+        IronButtonState,
+        IronControlState,
+        PaperRippleBehavior,
+        PaperButtonBehavior {
   MyPaperButton.created() : super.created();
 }

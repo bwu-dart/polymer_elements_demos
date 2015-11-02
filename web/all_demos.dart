@@ -10,8 +10,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 @HtmlImport('all_demos.html')
 library polymer_elements_demos.web.all_demos;
 
+import 'dart:async' show Future;
 import 'dart:html' as dom;
-import 'dart:js' show JsObject;
 
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/iron_list.dart';
@@ -36,8 +36,8 @@ import 'google_castable_video/google_castable_video_demo.dart';
 import 'google_chart/google_chart_demo.dart';
 import 'google_feeds/google_feeds_demo.dart';
 import 'google_hangout_button/google_hangout_button_demo.dart';
-//import 'google_map/google_map_demo.dart';
-//import 'google_map/google_map_polys_demo.dart';
+import 'google_map/google_map_demo.dart';
+import 'google_map/google_map_polys_demo.dart';
 import 'google_sheets/google_sheets_demo.dart';
 import 'google_signin/google_signin_demo.dart';
 import 'google_streetview_pano/google_streetview_pano_demo.dart';
@@ -243,30 +243,39 @@ class AllDemos extends PolymerElement {
   AllDemos.created() : super.created();
   @property List<DemoElementItem> demos;
 
-  @property
-  DemoElementItem selected;
+  @Property(observer: 'selectedItemChanged')
+  DemoElementItem selectedItem;
+
+  DemoElementItem _previouslySelectedItem;
 
   void ready() {
     set('demos',
         demoElements.map((name) => new DemoElementItem(name)).toList());
     _demoList.selectItem(convertToJs(demos.first));
+    _previouslySelectedItem = demos.first;
     _loadDemo(demos.first);
   }
 
   IronList get _demoList => $['demolist'] as IronList;
 
   @reflectable
-  void demoClickHandler(dom.Event event, [_]) {
-    // TODO(zoechi) remove workaround when #90 is fixed
-    final item = convertToDart(new JsObject.fromBrowserObject(
-            _demoList.jsElement.callMethod('modelForElement', [event.target]))[
-        'demo']) as DemoElementItem;
+//  void demoClickHandler(dom.Event event, [_]) {
+  void selectedItemChanged(DemoElementItem newItem, DemoElementItem oldItem) {
     // If the currently selected item is clicked, IronList deselects it.
     // We disable this behavior.
-    if (_demoList.selectedItem == null) {
-      _demoList.selectItem(convertToJs(item));
+    if (newItem == null) {
+      if(_previouslySelectedItem != null) {
+        new Future(() {
+          if(_demoList.selectedItem == null) {
+            _demoList.selectItem(convertToJs(_previouslySelectedItem));
+          }
+      });
+      }
     } else {
-      _loadDemo(item);
+      if(_previouslySelectedItem != newItem) {
+        _loadDemo(newItem);
+        _previouslySelectedItem = newItem;
+      }
     }
   }
 
@@ -308,8 +317,8 @@ const List demoElements = const [
 //   'google-drive-demo',
   'google-feeds-demo',
   'google-hangout-button-demo',
-//  'google-map-demo',
-//  'google-map-polys-demo',
+  'google-map-demo',
+  'google-map-polys-demo',
 //   'google-recaptch-demo',
   'google-sheets-demo',
   'google-signin-demo',

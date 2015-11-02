@@ -31,29 +31,11 @@ class PaperSliderDemo extends PolymerElement {
   PaperSlider get grade => $['grade'];
 
   @reflectable
-  ratingsChanged([_, __]) =>
-      // TODO(zoechi) change vvv to `ratings.value` when #74 is fixd
-      set('ratingsLabel', '${_toNum(ratings.jsElement['value'])}');
+  ratingsChanged([_, __]) => set('ratingsLabel', '${ratings.value}');
 
   @reflectable
   gradeChanged([_, __]) {
-    var value = _toNum(grade.jsElement['value']);
-    var label = (value < gradeSecondaryProgress) ? "Fail" : "Pass" ;
-      // TODO(zoechi) change vvv to `ratings.value` when #74 is fixd
-      set('gradeLabel', '$value ($label)');
-  }
-
-  // TODO(zoechi) remove when ratings.value behaves properly #74
-  num _toNum(val) {
-    if (val is num) {
-      return val;
-    }
-    if (val == null) {
-      return 0;
-    }
-    if (val is! String) {
-      throw ('Can\'t convert "${val}" to num.');
-    }
-    return num.parse(val);
+    var label = (grade.value < gradeSecondaryProgress) ? "Fail" : "Pass";
+    set('gradeLabel', '${grade.value} ($label)');
   }
 }

@@ -27,9 +27,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button icon="more-vert" on-tap="moreAction"></paper-icon-button>
         </paper-toolbar>
         <iron-list id="demolist" items="[[demos]]" as="demo" selection-enabled
-                   selected-item="{{selected}}">
+                   selected-item="{{selectedItem}}">
           <template>
-            <paper-item active="[[selected]]" on-tap="demoClickHandler" data-demo-name$="[[demo.name]]">
+            <paper-item active="[[selected]]">
               <div>[[demo.name]]</div>
             </paper-item>
           </template>

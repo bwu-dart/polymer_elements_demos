@@ -11,19 +11,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 library polymer_elements_demos.web.iron_list.iron_list_collapse_demo;
 
 import 'dart:html' as dom;
-import 'dart:math' as math;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements/iron_flex_layout.dart';
-import 'package:polymer_elements/paper_toolbar.dart';
-import 'package:polymer_elements/paper_scroll_header_panel.dart';
-import 'package:polymer_elements/paper_icon_button.dart';
 import 'package:polymer_elements/iron_ajax.dart';
+import 'package:polymer_elements/iron_flex_layout.dart';
 import 'package:polymer_elements/iron_icons.dart';
 import 'package:polymer_elements/iron_list.dart';
+import 'package:polymer_elements/paper_icon_button.dart';
+import 'package:polymer_elements/paper_scroll_header_panel.dart';
+import 'package:polymer_elements/paper_toolbar.dart';
 import 'package:polymer_elements_demos/styles/demo_elements.dart';
 
-/// Silence analyzer [Polymer], [IronFlexLayout], [PaperToolbar], [PaperScrollHeaderPanel], [PaperIconButton], [IronAjax], [IronIcons], [IronList], [DemoElements],
+/// Silence analyzer [Polymer], [IronAjax], [IronFlexLayout], [IronIcons],
+/// [IronList], [PaperIconButton], [PaperScrollHeaderPanel], [PaperToolbar],
+/// [DemoElements],
 @PolymerRegister('iron-list-collapse-demo')
 class IronListCollapseDemo extends PolymerElement with PolymerBase {
   IronListCollapseDemo.created() : super.created();
@@ -35,7 +36,10 @@ class IronListCollapseDemo extends PolymerElement with PolymerBase {
     IronList list = $['list'];
 
     // TODO(zoechi) change to JS way (line below) when supported in Dart
-    var model = convertToDart($['list'].jsElement.callMethod('modelForElement', [event.target])[list.attributes['as']]);
+    // dart-lang/polymer_elements#90
+    var model = convertToDart($['list']
+        .jsElement
+        .callMethod('modelForElement', [event.target])[list.attributes['as']]);
     // var index = event.model['index'];
 
     var index = model['index'];
