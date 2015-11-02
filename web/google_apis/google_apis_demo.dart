@@ -11,7 +11,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 library polymer_elements_demos.web.google_apis.google_apis_demo;
 
 import 'dart:html' as dom;
-import 'dart:js' as js;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/google_apis.dart';
@@ -21,6 +20,8 @@ import 'package:polymer_elements_demos/styles/demo_elements.dart';
 @PolymerRegister('google-apis-demo')
 class GoogleApisDemo extends PolymerElement {
   GoogleApisDemo.created() : super.created();
+
+  @property List<String> messages = [];
 
   @reflectable
   void loadedShortener(dom.Event event, [_]) {
@@ -34,8 +35,11 @@ class GoogleApisDemo extends PolymerElement {
 
   @reflectable
   void loaded(dom.Event event, [_]) {
+    print('messages: ${messages}');
     var message = '${(event.target as dom.Element).localName} loaded';
-    dom.document.querySelector('#messages').innerHtml += '${message}<br>';
+    add('messages', message);
+//    new PolymerDom($['messages']).innerHtml +=
+//        '${message}<br>';
     print(message);
     dom.window.console.debug((event.target as dynamic).api);
   }
