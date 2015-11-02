@@ -14,7 +14,6 @@ import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/paper_styles.dart';
 import 'package:polymer_elements_demos/styles/demo_elements.dart';
-import 'x_demo.dart';
 
 /// Silence analyzer [PaperStyles], [DemoElements], [XDemo]
 @PolymerRegister('paper-styles-demo')

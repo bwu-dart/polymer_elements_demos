@@ -14,15 +14,18 @@ import 'dart:convert' show JSON;
 import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements/paper_input.dart';
-import 'package:polymer_elements/paper_button.dart';
-import 'package:polymer_elements/paper_styles.dart';
-import 'package:polymer_elements/paper_checkbox.dart';
 import 'package:polymer_elements/iron_form.dart';
+import 'package:polymer_elements/paper_button.dart';
+import 'package:polymer_elements/paper_checkbox.dart';
+import 'package:polymer_elements/paper_dropdown_menu.dart';
+import 'package:polymer_elements/paper_input.dart';
+import 'package:polymer_elements/paper_item.dart';
+import 'package:polymer_elements/paper_menu.dart';
+import 'package:polymer_elements/paper_styles.dart';
 import 'package:polymer_elements_demos/styles/demo_elements.dart';
 import 'simple_element.dart';
 
-/// Silence analyzer [PaperInput], [PaperButton], [PaperStyles], [PaperCheckbox], [IronForm], [DemoElements], [SimpleElement],
+/// Silence analyzer [IronForm], [PaperButton], [PaperCheckbox], [PaperDropdownMenu], [PaperInput], [PaperItem], [PaperMenu], [PaperStyles], [DemoElements], [SimpleElement],
 @PolymerRegister('iron-form-demo')
 class IronFormDemo extends PolymerElement {
   IronFormDemo.created() : super.created();
