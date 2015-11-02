@@ -89,15 +89,15 @@ transformers:
     - web/iron_validatable_behavior/index.html
     - web/iron_validator_behavior/index.html
     - web/marked_element/index.html
-    #- web/neon_animation/card/index.html
-    #- web/neon_animation/declarative/index.html
-    #- web/neon_animation/doc/index.html
-    #- web/neon_animation/dropdown/index.html
-    #- web/neon_animation/grid/index.html
-    #- web/neon_animation/list/index.html
-    #- web/neon_animation/load/index.html
-    #- web/neon_animation/reprojection/index.html
-    #- web/neon_animation/tiles/index.html
+    #- web/neon_animation/card/index.html # TODO(zoechi) #28
+    #- web/neon_animation/declarative/index.html # TODO(zoechi) #28
+    #- web/neon_animation/doc/index.html # TODO(zoechi) #28
+    #- web/neon_animation/dropdown/index.html # TODO(zoechi) #28
+    #- web/neon_animation/grid/index.html # TODO(zoechi) #28
+    #- web/neon_animation/list/index.html # TODO(zoechi) #28
+    #- web/neon_animation/load/index.html # TODO(zoechi) #28
+    #- web/neon_animation/reprojection/index.html # TODO(zoechi) #28
+    #- web/neon_animation/tiles/index.html # TODO(zoechi) #28
     - web/paper_badge/index.html
     # - web/paper_behaviors/index.html # TODO(zoechi) #15
     - web/paper_button/index.html
@@ -121,7 +121,7 @@ transformers:
     - web/paper_radio_button/index.html
     - web/paper_radio_group/index.html
     - web/paper_ripple/index.html
-    - web/paper_scroll_header_panel/index.html # TODO(zoechi) demos 1-10#27
+    - web/paper_scroll_header_panel/index.html # TODO(zoechi) demos 1-10 #27
     - web/paper_slider/index.html # TODO(zoechi) dart-lang/polymer_elements#74
     - web/paper_spinner/index.html
     - web/paper_styles/index.html
