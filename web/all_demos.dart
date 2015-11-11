@@ -92,7 +92,7 @@ import 'paper_dialog/paper_dialog_demo.dart';
 import 'paper_dialog_behavior/paper_dialog_behavior_demo.dart';
 import 'paper_dialog_scrollable/paper_dialog_scrollable_demo.dart';
 import 'paper_drawer_panel/paper_drawer_panel_demo.dart';
-import 'paper_dropdown_menu/paper_dropdown_menu_demo.dart';
+//import 'paper_dropdown_menu/paper_dropdown_menu_demo.dart';
 import 'paper_fab/paper_fab_demo.dart';
 import 'paper_header_panel/paper_header_panel_demo.dart';
 import 'paper_icon_button/paper_icon_button_demo.dart';
@@ -386,7 +386,7 @@ const List demoElements = const [
   'paper-dialog-behavior-demo',
   'paper-dialog-scrollable-demo',
   'paper-drawer-panel-demo',
-  'paper-dropdown-menu-demo',
+//  'paper-dropdown-menu-demo',
   'paper-fab-demo',
   'paper-header-panel-demo',
   'paper-icon-button-demo',

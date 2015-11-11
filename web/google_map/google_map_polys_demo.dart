@@ -27,14 +27,16 @@ class GoogleMapPolysDemo extends PolymerElement {
 
   GoogleMapPoly get _poly => $$('google-map-poly');
 
-
   @property
   String toggleEditButtonCaption = editingButtonCaptionEnabled;
 
   @reflectable
   void toggleEdit([_, __]) {
     _poly.editable = !_poly.editable;
-    set('toggleEditButtonCaption', _poly.editable ? editingButtonCaptionEnabled : editingButtonCaptionDisabled);
-
+    set(
+        'toggleEditButtonCaption',
+        _poly.editable
+            ? editingButtonCaptionEnabled
+            : editingButtonCaptionDisabled);
   }
 }

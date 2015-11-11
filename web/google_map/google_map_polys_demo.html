@@ -9,14 +9,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <dom-module id="google-map-polys-demo">
   <template>
-    <style>
+    <style include="demo-elements">
       #toggleEdit {
         position: absolute;
         top: 10px;
         left: 120px;
       }
     </style>
-    <style include="demo-elements"></style>
 
     <google-map latitude="37.779" longitude="-122.3892" min-zoom="9" max-zoom="11" language="en">
       <google-map-poly closed fill-color="red" fill-opacity=".25" stroke-weight="1">
@@ -26,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </google-map-poly>
     </google-map>
 
-    <button id="toggleEdit" on-click="toggleEdit">Toggle editing</button>
+    <button id="toggleEdit" on-click="toggleEdit">{{toggleEditButtonCaption}}</button>
 
   </template>
 </dom-module>

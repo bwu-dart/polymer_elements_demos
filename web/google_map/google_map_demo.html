@@ -9,14 +9,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <dom-module id="google-map-demo">
   <template>
-    <style>
+    <style include ="demo-elements">
       #controlsToggle {
         position: absolute;
         left: 10%;
         bottom: 10%;
       }
     </style>
-    <style include="demo-elements"></style>
 
     <google-map id="map"
                 on-api-load="apiLoad"

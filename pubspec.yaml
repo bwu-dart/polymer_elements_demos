@@ -41,7 +41,7 @@ transformers:
     - web/google_feeds/index.html
     - web/google_hangout_button/index.html
     - web/google_map/index.html
-    - web/google_map/poly.html
+    - web/google_map/polys.html
     #- web/google_recaptcha/index.html # TODO(zoechi) element not available #6
     - web/google_sheets/index.html
     - web/google_signin/index.html # TODO(zoechi) issues #7
@@ -107,7 +107,7 @@ transformers:
     - web/paper_dialog_behavior/index.html
     - web/paper_dialog_scrollable/index.html
     - web/paper_drawer_panel/index.html
-    - web/paper_dropdown_menu/index.html
+    #- web/paper_dropdown_menu/index.html # TODO(zoechi) broken due to missing paper-lightbox
     - web/paper_fab/index.html
     - web/paper_header_panel/index.html
     - web/paper_input/index.html
@@ -160,7 +160,7 @@ transformers:
     - web/google_feeds/index.dart
     - web/google_hangout_button/index.dart
     - web/google_map/index.dart
-    - web/google_map/poly.dart
+    - web/google_map/polys.dart
     #- web/google_recaptcha/index.dart
     - web/google_sheets/index.dart
     - web/google_signin/index.dart
@@ -226,13 +226,13 @@ transformers:
     - web/paper_dialog_behavior/index.dart
     - web/paper_dialog_scrollable/index.dart
     - web/paper_drawer_panel/index.dart
-    - web/paper_dropdown_menu/index.dart
+    #- web/paper_dropdown_menu/index.dart
     - web/paper_fab/index.dart
     - web/paper_header_panel/index.dart
     - web/paper_icon_button/index.dart
     - web/paper_input/index.dart
     - web/paper_item/index.dart
-    - web/paper_listbox/index.dart
+    #- web/paper_listbox/index.dart
     - web/paper_material/index.dart
     - web/paper_menu/index.dart
     - web/paper_menu_button/index.dart

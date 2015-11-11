@@ -31,6 +31,7 @@ class GoogleMapDemo extends PolymerElement {
 
   @reflectable
   void toggleControls([_, __]) {
-    $['map'].disableDefaultUi = !$['map'].disableDefaultUi;
+    GoogleMap map = $['map'];
+    map.disableDefaultUi = !map.disableDefaultUi;
   }
 }
