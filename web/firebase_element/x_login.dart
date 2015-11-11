@@ -46,6 +46,7 @@ class XLogin extends PolymerElement {
       parameters['password'] = password;
     }
 
+    // TODO(zoechi) #14 convertToJs() shouldn't be necessary
     _firebaseLogin.login(convertToJs(parameters), null);
   }
 

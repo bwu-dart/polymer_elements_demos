@@ -7,8 +7,12 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
-@HtmlImport('demo_elements.html')
-library polymer_elements_demos.lib.styles.demo_elements;
-
-import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
+import 'prism_element_demo.dart';
+import 'package:polymer_elements/paper_styles.dart';
+import 'package:polymer_elements/demo_pages.dart';
+
+/// Silence analyzer [PrismElementDemo]
+main() async {
+  await initPolymer();
+}

@@ -26,7 +26,7 @@ class PaperIconButtonDemo extends PolymerElement {
   @reflectable
   void clickHandler(dom.Event event, [_]) {
     var button =
-        ((Polymer.dom(event) as PolymerEvent).localTarget as PaperIconButton);
+        (new PolymerEvent(event).localTarget as PaperIconButton);
     if (button.attributes.containsKey('disabled')) {
       dom.window.console
           .error('should not be able to click disabled button');

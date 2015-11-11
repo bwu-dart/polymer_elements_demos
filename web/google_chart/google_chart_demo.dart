@@ -23,6 +23,8 @@ import 'package:polymer_elements_demos/styles/demo_elements.dart';
 class GoogleChartDemo extends PolymerElement {
   GoogleChartDemo.created() : super.created();
 
+  @property String lineChartImageUrl;
+
   void ready() {
     // `drawChart()` needs to be called when the window was resized to update
     // the charts
@@ -73,5 +75,12 @@ class GoogleChartDemo extends PolymerElement {
       {'row': 1, 'column': null}
     ];
     $['selection-label'].textContent = chart.selection[0].row;
+  }
+
+  @reflectable
+  void lineChartRender([_, __]) {
+    GoogleChart chart = $['line_chart'];
+    // TODO(zoechi) enable when `getImageUri()` is available in Dart
+    // set('lineChartImageUrl', chart.getImageUri());
   }
 }

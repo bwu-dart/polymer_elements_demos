@@ -30,7 +30,7 @@ class PaperDialogDemo extends PolymerElement {
 
   @reflectable
   void openDialog(dom.Event event, [_]) {
-    var id = ((Polymer.dom(event) as PolymerEvent).localTarget as dom.Element)
+    var id = (new PolymerEvent(event).localTarget as dom.Element)
         .dataset['dialog'];
     var dialog = $[id];
     if (dialog != null) {

@@ -115,6 +115,7 @@ import 'paper_toast/paper_toast_demo.dart';
 import 'paper_toggle_button/paper_toggle_button_demo.dart';
 import 'paper_toolbar/paper_toolbar_demo.dart';
 import 'paper_tooltip/paper_tooltip_demo.dart';
+import 'prism_element/prism_element_demo.dart';
 //  import 'chartjs_element/index.dart';
 //  import 'google_domain_user_picker/google_domain_user_picker_demo.dart';
 //  import 'google_drive/google_drive_demo.dart';
@@ -238,6 +239,7 @@ import 'paper_tooltip/paper_tooltip_demo.dart';
 /// [PaperToggleButtonDemo]
 /// [PaperToolbarDemo]
 /// [PaperTooltipDemo]
+/// [PrismElementDemo]
 @PolymerRegister('all-demos')
 class AllDemos extends PolymerElement {
   AllDemos.created() : super.created();
@@ -281,7 +283,7 @@ class AllDemos extends PolymerElement {
 
   void _loadDemo(DemoElementItem item) {
     final demo = new dom.Element.tag(item.name);
-    final placeholder = Polymer.dom($['placeholder']) as PolymerDom;
+    final placeholder = new PolymerDom($['placeholder']);
     placeholder.childNodes.clear();
     placeholder.append(demo);
   }
@@ -407,4 +409,5 @@ const List demoElements = const [
   'paper-toggle-button-demo',
   'paper-toolbar-demo',
   'paper-tooltip-demo',
+  'prism-element-demo',
 ];

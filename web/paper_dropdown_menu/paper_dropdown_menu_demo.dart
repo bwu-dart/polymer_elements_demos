@@ -14,7 +14,7 @@ import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/iron_icons.dart';
 import 'package:polymer_elements/iron_icon.dart';
-import 'package:polymer_elements/paper_menu.dart';
+import 'package:polymer_elements/paper_listbox.dart';
 import 'package:polymer_elements/paper_item.dart';
 import 'package:polymer_elements/paper_button.dart';
 import 'package:polymer_elements/paper_tabs.dart';

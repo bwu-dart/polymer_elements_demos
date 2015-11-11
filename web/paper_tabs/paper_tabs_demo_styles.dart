@@ -7,8 +7,9 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
-@HtmlImport('demo_elements.html')
-library polymer_elements_demos.lib.styles.demo_elements;
+@HtmlImport('paper_tabs_demo_styles.html')
+library polymer_elements_demos.web.paper_tabs.paper_tabs_demo_styles;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
+

@@ -228,6 +228,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <google-chart
       type='line'
+      id='line_chart'
+      on-google-chart-render='lineChartRender'
       options='{"title": "Days in a month"}'
       cols='[{"label": "Month", "type": "string"},{"label": "Days", "type": "number"}]'
       rows='[["Jan", 31],["Feb", 28],["Mar", 31],["Apr", 30],["May", 31],["Jun", 30]]'>
@@ -341,5 +343,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                ["Zaire", "Africa", 8]]'>
     </google-chart>
 
+    <p>Here's an image of the line chart:</p>
+
+    <img src$="{{lineChartImageUri}}">
   </template>
 </dom-module>

@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 @HtmlImport('my_paper_radio_button.html')
 library polymer_elements_demos.web.web.paper_behaviors.my_paper_radio_button;
 
+import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/paper_checked_element_behavior.dart';
@@ -39,12 +40,14 @@ class MyPaperRadioButton extends PolymerElement
 
   static var hostAttributes = {'role': 'radio'};
 
+  dom.Element _rippleContainer;
+
   void ready() {
     toggles = true;
   }
 
   void createRipple() {
-    rippleContainer = $['radioContainer'];
+    _rippleContainer = $['radioContainer'];
     return Polymer.PaperInkyFocusBehaviorImpl._createRipple.call(this);
   }
 }

@@ -37,8 +37,14 @@ class IronFormDemo extends PolymerElement {
       set('output', JSON.encode(event.detail));
 
   @reflectable
-  void clickHandler(dom.Event event, [_]) {
+  void submitHandler(dom.Event event, [_]) {
     ((new PolymerEvent(event).localTarget as dom.Element).parent
         as dom.FormElement).submit();
+  }
+
+  @reflectable
+  void resetHandler(dom.Event event, [_]) {
+    ((new PolymerEvent(event).localTarget as dom.Element).parent
+        as dom.FormElement).reset();
   }
 }

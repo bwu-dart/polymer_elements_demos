@@ -130,6 +130,7 @@ transformers:
     - web/paper_toggle_button/index.html # TODO(zoechi) labels are now show. I'll check again after a new versions of the elements is available
     - web/paper_toolbar/index.html
     - web/paper_tooltip/index.html # TODO(zoechi) rich text tooltips location wrong
+    #- web/prism_element/index.html TODO(zoechi) JS demo doesn't seem to fully work yet, and it's not online
     #- web/platinum_bluetooth/index.html # TODO(zoechi) element not available #6
     #- web/platinum_https_redirect/index.html # TODO(zoechi) element not available #6
     #- web/platinum_push_messaging/index.html # TODO(zoechi) element not available #6
@@ -248,6 +249,7 @@ transformers:
     - web/paper_toggle_button/index.dart
     - web/paper_toolbar/index.dart
     - web/paper_tooltip/index.dart
+    #- web/prism_element/index.dart
     #- web/platinum_bluetooth/index.dart
     #- web/platinum_https_redirect/index.dart
     #- web/platinum_push_messaging/index.dart

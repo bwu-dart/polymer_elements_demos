@@ -12,7 +12,7 @@ library polymer_elements_demos.web.iron_media_query.iron_media_query_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements/paper_styles.dart';
+import 'package:polymer_elements/paper_styles_classes.dart';
 import 'package:polymer_elements/iron_media_query.dart';
 import 'package:polymer_elements_demos/styles/demo_elements.dart';
 

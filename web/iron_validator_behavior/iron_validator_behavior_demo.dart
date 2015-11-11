@@ -42,7 +42,7 @@ class IronValidatorBehaviorDemo extends PolymerElement {
   @reflectable
   void inputMultiHandler(dom.Event event, [_]) {
     var values = <String>[];
-    var nodes = (Polymer.dom(event.currentTarget) as PolymerDom)
+    var nodes = new PolymerDom(event.currentTarget)
         .querySelectorAll('input') as List<dom.InputElement>;
     for (dom.InputElement node in nodes) {
       values.add(node.value);

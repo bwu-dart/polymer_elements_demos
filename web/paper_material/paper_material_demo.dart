@@ -25,7 +25,7 @@ class PaperMaterialDemo extends PolymerElement {
 
   @reflectable
   void tapAction (dom.Event event, [_]) {
-    PaperMaterial target = (Polymer.dom(event) as PolymerEvent).localTarget;
+    PaperMaterial target = new PolymerEvent(event).localTarget;
     if (!target.attributes.containsKey('down')) {
       target.elevation += 1;
       if (target.elevation == 5) {
