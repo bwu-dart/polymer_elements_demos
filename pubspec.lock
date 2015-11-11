@@ -40,7 +40,7 @@ packages:
   convert:
     description: convert
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   crypto:
     description: crypto
     source: hosted
@@ -108,7 +108,7 @@ packages:
   polymer:
     description: polymer
     source: hosted
-    version: "1.0.0-rc.5"
+    version: "1.0.0-rc.6"
   polymer_elements:
     description: polymer_elements
     source: hosted
@@ -116,7 +116,7 @@ packages:
   polymer_interop:
     description: polymer_interop
     source: hosted
-    version: "1.0.0-rc.4"
+    version: "1.0.0-rc.5"
   pool:
     description: pool
     source: hosted
@@ -124,7 +124,7 @@ packages:
   pub_semver:
     description: pub_semver
     source: hosted
-    version: "1.2.2"
+    version: "1.2.3"
   quiver:
     description: quiver
     source: hosted
@@ -160,7 +160,7 @@ packages:
   stack_trace:
     description: stack_trace
     source: hosted
-    version: "1.4.2"
+    version: "1.5.0"
   string_scanner:
     description: string_scanner
     source: hosted

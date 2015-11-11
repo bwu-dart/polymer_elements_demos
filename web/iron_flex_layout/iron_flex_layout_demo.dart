@@ -12,11 +12,11 @@ library polymer_elements_demos.web.iron_flex_layout.iron_flex_layout_demo;
 
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
-import 'package:polymer_elements/paper_styles.dart';
 import 'package:polymer_elements_demos/styles/demo_elements.dart';
-import 'x_app.dart';
+import 'package:polymer_elements/iron_flex_layout.dart';
+import 'demo_snippet.dart';
 
-/// Silence analyzer [PaperStyles], [DemoElements], [XApp],
+/// Silence analyzer [PaperStyles], [DemoElements], [DemoSnippet],
 @PolymerRegister('iron-flex-layout-demo')
 class IronFlexLayoutDemo extends PolymerElement {
   IronFlexLayoutDemo.created() : super.created();

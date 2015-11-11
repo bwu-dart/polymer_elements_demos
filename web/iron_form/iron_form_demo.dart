@@ -38,7 +38,7 @@ class IronFormDemo extends PolymerElement {
 
   @reflectable
   void clickHandler(dom.Event event, [_]) {
-    (((Polymer.dom(event) as PolymerEvent).localTarget as dom.Element).parent
+    ((new PolymerEvent(event).localTarget as dom.Element).parent
         as dom.FormElement).submit();
   }
 }
