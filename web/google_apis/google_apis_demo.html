@@ -10,7 +10,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="google-apis-demo">
   <template>
     <style include="demo-elements"></style>
-    <div id="messages"></div>
+    <div>
+      <template is="dom-repeat" items="[[messages]]">
+        <div>[[item]]</div>
+      </template>
+    </div>
 
     <google-client-loader id="shortener"
       name="urlshortener"
