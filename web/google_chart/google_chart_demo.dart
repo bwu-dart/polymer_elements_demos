@@ -25,6 +25,8 @@ class GoogleChartDemo extends PolymerElement {
 
   @property String lineChartImageUrl;
 
+  @property String selectionLabel = 'None';
+
   void ready() {
     // `drawChart()` needs to be called when the window was resized to update
     // the charts
@@ -58,8 +60,11 @@ class GoogleChartDemo extends PolymerElement {
 
     on['google-chart-select'].listen((_) {
       var chart = $['selection-chart'] as GoogleChart;
-      $['selection-label'].textContent =
-          chart.selection[0] != null ? chart.selection[0].row : 'None';
+      set(
+          'selectionLabel',
+          chart.selection[0] != null
+              ? chart.selection[0]['row'].toString()
+              : 'None');
     });
   }
 
@@ -74,7 +79,7 @@ class GoogleChartDemo extends PolymerElement {
     chart.selection = [
       {'row': 1, 'column': null}
     ];
-    $['selection-label'].textContent = chart.selection[0].row;
+    set('selectionLabel', chart.selection[0]['row'].toString());
   }
 
   @reflectable

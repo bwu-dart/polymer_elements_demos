@@ -62,7 +62,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <!-- TODO(zoechi) doesn't work (nothing shown on the page) -->
     <google-chart
       id='resizing_chart'
       type='column'
@@ -86,7 +85,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
     <p>Here's a pie chart with an area selection:</p>
-    <!-- TODO(zoechi) doesn't work (nothing shown on the page) -->
     <div id="selection-demo">
       <google-chart
         type="pie"
@@ -97,12 +95,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         rows='[["Jan", 31],["Feb", 28],["Mar", 31],["Apr", 30],["May", 31],["Jun", 30]]'>
       </google-chart>
       <div id="selection-display">
-        Selected row: <span id="selection-label">None</span>.
+        Selected row: <span>[[selectionLabel]]</span>.
       </div>
     </div>
 
     <p>Here's a chart defined using <code>data</code>, rather than <code>rows</code> and <code>cols</code>:</p>
-    <!-- TODO(zoechi) doesn't work (nothing shown on the page) -->
     <google-chart
       type='column'
       options='{"title": "Inventory"}'
