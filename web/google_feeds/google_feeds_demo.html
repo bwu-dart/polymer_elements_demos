@@ -11,17 +11,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <style include="demo-elements"></style>
 
+    <template is="dom-repeat" items="[[messages}}" as="message">
+      <div>{{message}}</div>
+    </template>
+
     <!-- Single feed query -->
-    <google-feeds feed="http://www.engadget.com/rss-full.xml">
-    </google-feeds>
+    <google-feeds feed="http://www.engadget.com/rss-full.xml"></google-feeds>
 
     <!-- Find feeds -->
     <google-feeds query="gadgets" id="feedSearch"></google-feeds>
 
     <!-- Multiple feeds query -->
-    <google-feeds id="feeder"></google-feeds>
+    <google-feeds feeds="[[feeds]]"></google-feeds>
 
-    <div>{{message}}</div>
+    <!-- format feeds -->
+    <google-feeds id="feedFormat" feed="http://www.engadget.com/rss-full.xml" format="xml"></google-feeds>
+
+    <!-- format feed not correct then json is retrieved -->
+    <google-feeds id="feedFormat" feed="http://www.engadget.com/rss-full.xml" format="xmls"></google-feeds>
 
   </template>
 </dom-module>

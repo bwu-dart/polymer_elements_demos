@@ -20,21 +20,21 @@ import 'package:polymer_elements_demos/styles/demo_elements.dart';
 class GoogleFeedsDemo extends PolymerElement {
   GoogleFeedsDemo.created() : super.created();
 
-  @property String message = '';
+  @property List<String> messages = [];
+
+  @property List<String> feeds = [
+        'https://news.ycombinator.com/rss',
+        'http://feeds.bbci.co.uk/news/rss.xml'
+      ];
 
   void ready() {
     on['google-feeds-response'].listen((e) {
-      set('message', '$message${e.target.localName} loaded\n');
+      add('messages', '${e.target.localName} loaded\n');
       print(e.detail['feed']);
     });
 
     on['google-feeds-queryresponse'].listen((e) {
       print('findFeeds response: ${e.detail['entries']}');
     });
-
-    $['feeder'].feeds = [
-      'https://news.ycombinator.com/rss',
-      'http://feeds.bbci.co.uk/news/rss.xml'
-    ];
   }
 }
