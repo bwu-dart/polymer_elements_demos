@@ -31,6 +31,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
       }
+
+      #collapse3 {
+        max-height: 160px;
+      }
     </style>
     <style include="demo-elements"></style>
 
@@ -50,7 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <button class="heading" aria-expanded$="[[isExpanded(opened3)]]" aria-controls="collapse3"  on-click="toggle" data-target="collapse3">Collapse #3</button>
 
-        <iron-collapse id="collapse3" tabindex="0" opened="{{opened3}}">
+        <iron-collapse id="collapse3" tabindex="0" opened="{{opened3}}" horizontal>
           <div class="content">
             <div>Iisque perfecto dissentiet cum et, sit ut quot mandamus, ut vim tibique splendide instructior. Id nam odio natum malorum, tibique copiosae expetenda mel ea. Mea melius malorum ut. Ut nec tollit vocent timeam. Facer nonumy numquam id his, munere salutatus consequuntur eum et, eum cotidieque definitionem signiferumque id. Ei oblique graecis patrioque vis, et probatus dignissim inciderint vel. Sed id paulo erroribus, autem semper accusamus in mel. Iisque perfecto dissentiet cum et, sit ut quot mandamus, ut vim tibique splendide instructior. Id nam odio natum malorum, tibique copiosae expetenda mel ea. Mea melius malorum ut. Ut nec tollit vocent timeam. Facer nonumy numquam id his, munere salutatus consequuntur eum et, eum cotidieque definitionem signiferumque id. Ei oblique graecis patrioque vis, et probatus dignissim inciderint vel. Sed id paulo erroribus, autem semper accusamus in mel.</div>
           </div>
