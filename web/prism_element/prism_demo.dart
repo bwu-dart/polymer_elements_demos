@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 @HtmlImport('prism_demo.html')
 library polymer_elements_demos.web.web.prism_elementprism_demo;
 
+import 'dart:html' as dom;
 import 'package:web_components/web_components.dart' show HtmlImport;
 import 'package:polymer/polymer.dart';
 import 'package:polymer_elements/prism_highlighter.dart';
@@ -21,19 +22,19 @@ class PrismDemo extends PolymerElement {
 
   @Property(observer: 'render') String code;
 
-  @property String lang;
+  @Property(observer: 'render') String language;
 
   @override
   void attached() {
     render();
   }
 
+  @reflectable
   void render([_, __]) {
-    $['output'].innerHtml = highlight(code, lang);
+    ($['output'] as dom.Element).text = highlight(code, language);
   }
 
-  highlight(String code, String lang) {
-    var event = fire('syntax-highlight', detail: {code: code, lang: lang});
-    return event.detail.code;
-  }
+  String highlight(String code, String lang) =>
+      fire('syntax-highlight', detail: {'code': code, 'lang': lang}).detail[
+          'code'];
 }
