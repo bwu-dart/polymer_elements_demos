@@ -229,10 +229,8 @@
               "file": "demo/index.html",
               "sha": "2b9b6d3eb17530a4913a4e0a5d514e225e73f674",
               "commit_sha": "56406b0421ccaf0db875945891cf221dabd8bd12",
-              "old_sha": "aca5d6b8b00a442bfd46bba444b72d2f6f7982c9",
-              "old_commit_sha": "912bf0deee3acc47c240999c4b36aae28d4f4481",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/iron-behaviors/compare/912bf0deee3acc47c240999c4b36aae28d4f4481...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/iron-behaviors/blob/master/demo/index.html"
             },
             {
               "file": "demo/simple-button.html",
@@ -271,10 +269,12 @@
           "files": [
             {
               "file": "demo/index.html",
-              "sha": "a62b036627f470c8f10f08aa1a55954d9f4ba5fd",
-              "commit_sha": "66a267ecbec6cc5a88a1b80a0fb57f8d8c42e262",
-              "change": "FileChange.none",
-              "compare_view": "https://github.com/PolymerElements/iron-collapse/blob/master/demo/index.html"
+              "sha": "c62be30d11671fb558f0c8d37d779a6d699c0f98",
+              "commit_sha": "9a0dd2abcc9a939ae552388510d0c1bcdada34a9",
+              "old_sha": "a62b036627f470c8f10f08aa1a55954d9f4ba5fd",
+              "old_commit_sha": "66a267ecbec6cc5a88a1b80a0fb57f8d8c42e262",
+              "change": "FileChange.modified",
+              "compare_view": "https://github.com/PolymerElements/iron-collapse/compare/66a267ecbec6cc5a88a1b80a0fb57f8d8c42e262...master"
             }
           ],
           "skip": false,
@@ -377,10 +377,8 @@
               "file": "demo/index.html",
               "sha": "1c8f5617deaa6613259b3ce88eaeaa30e5947c62",
               "commit_sha": "04bd90797aded9ac56b1414fd4259e6afc584e80",
-              "old_sha": "ea4df383629c5bf375c5acfc8dc8cfe84231387f",
-              "old_commit_sha": "d866ab11c65191ad6d7ebe82049211c5f9a6e393",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/iron-flex-layout/compare/d866ab11c65191ad6d7ebe82049211c5f9a6e393...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/iron-flex-layout/blob/master/demo/index.html"
             },
             {
               "file": "demo/x-app.html",
@@ -392,7 +390,7 @@
               "file": "demo/demo-snippet.html",
               "sha": "70d8ab1d60d923225ef31a764730d44a48d7cab9",
               "commit_sha": "04bd90797aded9ac56b1414fd4259e6afc584e80",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/iron-flex-layout/blob/master/demo/demo-snippet.html"
             }
           ],
@@ -406,10 +404,8 @@
               "file": "demo/index.html",
               "sha": "c5027fa0209a5bf78decc49828e60c0f4163468d",
               "commit_sha": "6a0eba168ffbd9f762e307f144710ad8f2adca6d",
-              "old_sha": "b1e4b3efacdb94291cb1c8d0749eba0efc6913e5",
-              "old_commit_sha": "77881b1d806dcba06c44cd8aa770407a67bff125",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/iron-form/compare/77881b1d806dcba06c44cd8aa770407a67bff125...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/iron-form/blob/master/demo/index.html"
             },
             {
               "file": "demo/simple-element.html",
@@ -527,19 +523,15 @@
               "file": "demo/index.html",
               "sha": "53b291aa3572a9dab4513da4ab1581c57916529b",
               "commit_sha": "96653205161f76a4b3ed117e11efd24e787c251e",
-              "old_sha": "5dcbce002e9bd369742f5ae0af27570defc763c2",
-              "old_commit_sha": "ebd17924942abe6110aa0fe81b1b31e1fcc34a9f",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/iron-iconset-svg/compare/ebd17924942abe6110aa0fe81b1b31e1fcc34a9f...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/iron-iconset-svg/blob/master/demo/index.html"
             },
             {
               "file": "demo/svg-sample-icons.html",
               "sha": "3eed843f09820167565b7974e722b67b7b4c3cbe",
               "commit_sha": "96653205161f76a4b3ed117e11efd24e787c251e",
-              "old_sha": "94c930d5746628fbcc8c8e999035cb4ce28ec2f7",
-              "old_commit_sha": "ebd17924942abe6110aa0fe81b1b31e1fcc34a9f",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/iron-iconset-svg/compare/ebd17924942abe6110aa0fe81b1b31e1fcc34a9f...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/iron-iconset-svg/blob/master/demo/svg-sample-icons.html"
             }
           ],
           "skip": false,
@@ -552,10 +544,8 @@
               "file": "demo/index.html",
               "sha": "c54f1bcd70e2a9836ff6a4a8fd33c841e2d25726",
               "commit_sha": "0749ab83c43fd5ba435e42d32d74d22e5e76dcec",
-              "old_sha": "b29f9cb895e361e840645ccb66e766ac98747156",
-              "old_commit_sha": "2d4841a9c0b374ae942672864e69767a02c250b4",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/iron-image/compare/2d4841a9c0b374ae942672864e69767a02c250b4...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/iron-image/blob/master/demo/index.html"
             },
             {
               "file": "demo/polymer.svg",
@@ -629,24 +619,30 @@
             },
             {
               "file": "demo/index.html",
-              "sha": "b5f7a130fcb3739829948931ab0bfb597c44490a",
-              "commit_sha": "ab1e6af69b20d915c4f8dc522487a05e66191f6b",
-              "change": "FileChange.none",
-              "compare_view": "https://github.com/PolymerElements/iron-list/blob/master/demo/index.html"
+              "sha": "9e9a96bb7295842aae6a3b668bc194f86ec031ae",
+              "commit_sha": "41ba08e96ffb62ce9f0f5f50ddd41aee8e8b10b2",
+              "old_sha": "b5f7a130fcb3739829948931ab0bfb597c44490a",
+              "old_commit_sha": "ab1e6af69b20d915c4f8dc522487a05e66191f6b",
+              "change": "FileChange.modified",
+              "compare_view": "https://github.com/PolymerElements/iron-list/compare/ab1e6af69b20d915c4f8dc522487a05e66191f6b...master"
             },
             {
               "file": "demo/selection.html",
-              "sha": "86ba700f440c665436b660c83d85e972a1b3ce8a",
-              "commit_sha": "7f1b6c05d96c2655ad138e99f3ee44d074f8df7b",
-              "change": "FileChange.none",
-              "compare_view": "https://github.com/PolymerElements/iron-list/blob/master/demo/selection.html"
+              "sha": "5f7c4c108c351ead94614f6197b6f7177ae8047c",
+              "commit_sha": "41ba08e96ffb62ce9f0f5f50ddd41aee8e8b10b2",
+              "old_sha": "86ba700f440c665436b660c83d85e972a1b3ce8a",
+              "old_commit_sha": "7f1b6c05d96c2655ad138e99f3ee44d074f8df7b",
+              "change": "FileChange.modified",
+              "compare_view": "https://github.com/PolymerElements/iron-list/compare/7f1b6c05d96c2655ad138e99f3ee44d074f8df7b...master"
             },
             {
               "file": "demo/collapse.html",
-              "sha": "c49aaf0f98ef147ec43700cb17a74c6a8359b977",
-              "commit_sha": "7f1b6c05d96c2655ad138e99f3ee44d074f8df7b",
-              "change": "FileChange.none",
-              "compare_view": "https://github.com/PolymerElements/iron-list/blob/master/demo/collapse.html"
+              "sha": "53bd84eb816c0bcf1d754f9327ed6dad8a0e3996",
+              "commit_sha": "41ba08e96ffb62ce9f0f5f50ddd41aee8e8b10b2",
+              "old_sha": "c49aaf0f98ef147ec43700cb17a74c6a8359b977",
+              "old_commit_sha": "7f1b6c05d96c2655ad138e99f3ee44d074f8df7b",
+              "change": "FileChange.modified",
+              "compare_view": "https://github.com/PolymerElements/iron-list/compare/7f1b6c05d96c2655ad138e99f3ee44d074f8df7b...master"
             }
           ],
           "skip": false,
@@ -673,10 +669,8 @@
               "file": "demo/index.html",
               "sha": "0cbdcec509136cd64e82cfc7894c277da4a3c55a",
               "commit_sha": "fda20cb8e3bb2b49c2473b8a41fd2afae51db468",
-              "old_sha": "2bc99bce4b41779be2dad077965747c24000f409",
-              "old_commit_sha": "b6faf4e35f9332a549cd1b87f43c91a0574ec7c8",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/iron-media-query/compare/b6faf4e35f9332a549cd1b87f43c91a0574ec7c8...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/iron-media-query/blob/master/demo/index.html"
             }
           ],
           "skip": false,
@@ -821,6 +815,12 @@
           ],
           "skip": false,
           "change": "RepositoryChange.none"
+        },
+        {
+          "repository": "iron-swipeable-container",
+          "files": [],
+          "skip": false,
+          "change": "RepositoryChange.added"
         },
         {
           "repository": "iron-test-helpers",
@@ -1181,10 +1181,12 @@
           "files": [
             {
               "file": "demo/index.html",
-              "sha": "b5e3fdd8f9690931de1bdff995c23730a548fb6a",
-              "commit_sha": "fa2d25eee0daf288906eae3ba52179751885b7b0",
-              "change": "FileChange.none",
-              "compare_view": "https://github.com/PolymerElements/paper-card/blob/master/demo/index.html"
+              "sha": "25e6479618ed1f17d0a3df72502209145e52d290",
+              "commit_sha": "e42dac3b6915668c2fc37d3f9a70329107b6054c",
+              "old_sha": "b5e3fdd8f9690931de1bdff995c23730a548fb6a",
+              "old_commit_sha": "fa2d25eee0daf288906eae3ba52179751885b7b0",
+              "change": "FileChange.modified",
+              "compare_view": "https://github.com/PolymerElements/paper-card/compare/fa2d25eee0daf288906eae3ba52179751885b7b0...master"
             }
           ],
           "skip": false,
@@ -1274,10 +1276,8 @@
               "file": "demo/index.html",
               "sha": "fd6d4e41fe35d5508333e8829df4d053fb79586e",
               "commit_sha": "9191391bf0c7cfa56e40008b5545e5b20a4c9269",
-              "old_sha": "8810e58db56e87454425b32c9721fdfc0e5a3fb6",
-              "old_commit_sha": "4038e7f6d993521e45deafc3272d23bf91897ab2",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/paper-dropdown-menu/compare/4038e7f6d993521e45deafc3272d23bf91897ab2...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/paper-dropdown-menu/blob/master/demo/index.html"
             }
           ],
           "skip": false,
@@ -1324,10 +1324,8 @@
               "file": "demo/index.html",
               "sha": "9ce87ba61518ce479e587249f649054af14cc1cc",
               "commit_sha": "981c45c9e95efabbaf6c832054c7c28ec29c6122",
-              "old_sha": "ed4dcb1c37fc2f73b0233c8d57d10d4a0dad93e2",
-              "old_commit_sha": "15e9bd571ef8e77da8c58fb5f447fe7cc7c0c9f1",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/paper-icon-button/compare/15e9bd571ef8e77da8c58fb5f447fe7cc7c0c9f1...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/paper-icon-button/blob/master/demo/index.html"
             }
           ],
           "skip": false,
@@ -1554,19 +1552,15 @@
               "file": "demo/images/bg2.jpg",
               "sha": "a347ac1660bbd2727150d2ba3aa34269274e5902",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "old_sha": "9aad0a93ddd71c99c867d79d61edc9a30211835c",
-              "old_commit_sha": "551baefea53b0c8e3b512d5d59d6115ff44667ea",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/compare/551baefea53b0c8e3b512d5d59d6115ff44667ea...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/images/bg2.jpg"
             },
             {
               "file": "demo/images/bg3.jpg",
               "sha": "9463bc3242bc0abe12c8a33cdbb52c84f76b27a0",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "old_sha": "5079b4e80670e056ac219da93939da38dc1c6ee3",
-              "old_commit_sha": "551baefea53b0c8e3b512d5d59d6115ff44667ea",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/compare/551baefea53b0c8e3b512d5d59d6115ff44667ea...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/images/bg3.jpg"
             },
             {
               "file": "demo/images/bg5.jpg",
@@ -1590,10 +1584,8 @@
               "file": "demo/index.html",
               "sha": "2e5a58c3e51732aadae3151e61990a71a2f1e3ee",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "old_sha": "71611c9de9155fd0957e504514fa4379a653a04e",
-              "old_commit_sha": "551baefea53b0c8e3b512d5d59d6115ff44667ea",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/compare/551baefea53b0c8e3b512d5d59d6115ff44667ea...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/index.html"
             },
             {
               "file": "demo/lorem-ipsum.html",
@@ -1613,84 +1605,84 @@
               "file": "demo/drawer-panel.html",
               "sha": "61e26ee9c612a28cacbabb245b74274eae2d24d2",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/drawer-panel.html"
             },
             {
               "file": "demo/hide-header.html",
               "sha": "f11f9cb5f5d22e07cf1d47db1075f99ef5a86363",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/hide-header.html"
             },
             {
               "file": "demo/images/bg1.jpg",
               "sha": "3d8ebf151f4542883adabc23b85bdc666c932ca2",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/images/bg1.jpg"
             },
             {
               "file": "demo/images/bg4.jpg",
               "sha": "0300e0ecfcba15203bd583272289304929bc3f36",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/images/bg4.jpg"
             },
             {
               "file": "demo/keep-header.html",
               "sha": "199b7feda459bb636fa6347864d04e873067e544",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/keep-header.html"
             },
             {
               "file": "demo/toggle-fixed-header.html",
               "sha": "f5419751ce6d3a490d601c27e36db9ee37ca5d0c",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/toggle-fixed-header.html"
             },
             {
               "file": "demo/transform-header-1.html",
               "sha": "d4bfa6de471add88f1559460029d17c7194240cc",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/transform-header-1.html"
             },
             {
               "file": "demo/transform-header-2.html",
               "sha": "38d19c1b56c465cbd12ab471c0dd32c4e80aecaa",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/transform-header-2.html"
             },
             {
               "file": "demo/transform-header-3.html",
               "sha": "0359c5b70aca591ff0024eac94f13396e89847c8",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/transform-header-3.html"
             },
             {
               "file": "demo/transform-header-4.html",
               "sha": "8dadeecbc488d50ebe3a7d358ca58a8b69dfdd60",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/transform-header-4.html"
             },
             {
               "file": "demo/transform-header-5.html",
               "sha": "c3e856511514ccfb8a270dba3696208074b8a0f9",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/transform-header-5.html"
             },
             {
               "file": "demo/transform-header-6.html",
               "sha": "95702120561b08e3f69ca531951ef217ce883472",
               "commit_sha": "0dc478d4dac9eb33438c776cf6272162ba7ea6c4",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-scroll-header-panel/blob/master/demo/transform-header-6.html"
             }
           ],
@@ -1744,25 +1736,25 @@
           "files": [
             {
               "file": "demo/index.html",
-              "sha": "4e867947ca0ef811ed1b1b0c626ab061b94c5776",
-              "commit_sha": "3b7e54d84a95b825f686cef2f66c7eb91a3a68b6",
-              "old_sha": "2d7a17cdd5f1e2027d085bf60a443eed36425392",
-              "old_commit_sha": "b07b594cc08e7c97cda7e9b30b0bdd6c8969226c",
+              "sha": "1f1b8bd5af12326c04a78c9c21877126f3cdcc6e",
+              "commit_sha": "cb6e8524e0125b3cfb53d091540994fc25c1d2c1",
+              "old_sha": "4e867947ca0ef811ed1b1b0c626ab061b94c5776",
+              "old_commit_sha": "3b7e54d84a95b825f686cef2f66c7eb91a3a68b6",
               "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/paper-tabs/compare/b07b594cc08e7c97cda7e9b30b0bdd6c8969226c...master"
+              "compare_view": "https://github.com/PolymerElements/paper-tabs/compare/3b7e54d84a95b825f686cef2f66c7eb91a3a68b6...master"
             },
             {
               "file": "demo/paper-tabs-demo-styles.html",
               "sha": "d2d9303b37859498946070d78be3e6740e5eb5d9",
               "commit_sha": "3b7e54d84a95b825f686cef2f66c7eb91a3a68b6",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-tabs/blob/master/demo/paper-tabs-demo-styles.html"
             },
             {
               "file": "demo/tabs-with-content-example.html",
               "sha": "d6d96869e262d0eeb68215bac1ebb351a9f48b66",
               "commit_sha": "3b7e54d84a95b825f686cef2f66c7eb91a3a68b6",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/paper-tabs/blob/master/demo/tabs-with-content-example.html"
             }
           ],
@@ -1921,14 +1913,14 @@
               "file": "demo/index.html",
               "sha": "88d375b65989924c8765ca72eebfe55a7e2167b4",
               "commit_sha": "5622ed69fa851cf46b8dc97db083ab9b01179da7",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/prism-element/blob/master/demo/index.html"
             },
             {
               "file": "demo/prism-demo.html",
               "sha": "fab8cb23230b3014dbd03ceead8f6334df600655",
               "commit_sha": "5622ed69fa851cf46b8dc97db083ab9b01179da7",
-              "change": "FileChange.added",
+              "change": "FileChange.none",
               "compare_view": "https://github.com/PolymerElements/prism-element/blob/master/demo/prism-demo.html"
             }
           ],
@@ -1956,10 +1948,8 @@
               "file": "demo/index.html",
               "sha": "300b0c031631b8d872106f567c72140a692246dd",
               "commit_sha": "63f22961f39518972603ebde003f887872534ec5",
-              "old_sha": "b404c0017e414c74e67758ffb31d4d28ba9fabe6",
-              "old_commit_sha": "2eb5a00bff37011375f321d69eb6b758a82a7b35",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/PolymerElements/seed-element/compare/2eb5a00bff37011375f321d69eb6b758a82a7b35...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/PolymerElements/seed-element/blob/master/demo/index.html"
             }
           ],
           "skip": false,
@@ -1976,6 +1966,27 @@
           "files": [],
           "skip": false,
           "change": "RepositoryChange.none"
+        },
+        {
+          "repository": "test-benchmark",
+          "files": [
+            {
+              "file": "demo/index.html",
+              "sha": "8b17716ceaad14f536d685150f026bb9d364ba2b",
+              "commit_sha": "87c75024a765a1187e58a3ea8453aac0e3de9d31",
+              "change": "FileChange.added",
+              "compare_view": "https://github.com/PolymerElements/test-benchmark/blob/master/demo/index.html"
+            },
+            {
+              "file": "demo/simple.html",
+              "sha": "b405fc18982deab16df3f19ab9cdf52b99f9227f",
+              "commit_sha": "87c75024a765a1187e58a3ea8453aac0e3de9d31",
+              "change": "FileChange.added",
+              "compare_view": "https://github.com/PolymerElements/test-benchmark/blob/master/demo/simple.html"
+            }
+          ],
+          "skip": false,
+          "change": "RepositoryChange.added"
         },
         {
           "repository": "test-fixture",
@@ -2099,10 +2110,8 @@
               "file": "demo/index.html",
               "sha": "324a0dc8ddeb1900515ae009c83aacdb230e0ea1",
               "commit_sha": "eaaaf380c6a769ded22706702151b797fd8f031c",
-              "old_sha": "66bf60e3316867b18699e38c2f0ae499633c56e1",
-              "old_commit_sha": "dabf96156dd26a31da6036a4621689c414a0fa70",
-              "change": "FileChange.modified",
-              "compare_view": "https://github.com/GoogleWebComponents/google-chart/compare/dabf96156dd26a31da6036a4621689c414a0fa70...master"
+              "change": "FileChange.none",
+              "compare_view": "https://github.com/GoogleWebComponents/google-chart/blob/master/demo/index.html"
             }
           ],
           "skip": false,
@@ -2168,10 +2177,12 @@
           "files": [
             {
               "file": "demo/index.html",
-              "sha": "a0fb2bbe12fd34c4577e01a915ddc422302d6242",
-              "commit_sha": "6747e9ad08d41c866c1af9c568009e04cc1c89ea",
-              "change": "FileChange.none",
-              "compare_view": "https://github.com/GoogleWebComponents/google-feeds/blob/master/demo/index.html"
+              "sha": "0c8abd12ab9115bbda3f296003de9f902ea252ff",
+              "commit_sha": "df2b98709c0ba22d96048a455c71ff163644d9b0",
+              "old_sha": "a0fb2bbe12fd34c4577e01a915ddc422302d6242",
+              "old_commit_sha": "6747e9ad08d41c866c1af9c568009e04cc1c89ea",
+              "change": "FileChange.modified",
+              "compare_view": "https://github.com/GoogleWebComponents/google-feeds/compare/6747e9ad08d41c866c1af9c568009e04cc1c89ea...master"
             }
           ],
           "skip": false,
@@ -2413,6 +2424,7 @@
       "web/iron_resizable_behavior/index.html",
       "web/iron_selector/index.html",
       "web/iron_signals/index.html",
+      "web/iron_swipeable_container/index.html",
       "web/iron_test_helpers/index.html",
       "web/iron_validatable_behavior/index.html",
       "web/iron_validator_behavior/index.html",
@@ -2464,6 +2476,7 @@
       "web/seed_element/index.html",
       "web/style_guide/index.html",
       "web/test_all/index.html",
+      "web/test_benchmark/index.html",
       "web/test_fixture/index.html",
       "web/demos/index.html",
       "web/firebase_element/index.html",
@@ -2539,6 +2552,7 @@
       "web/iron_resizable_behavior/index.dart",
       "web/iron_selector/index.dart",
       "web/iron_signals/index.dart",
+      "web/iron_swipeable_container/index.dart",
       "web/iron_test_helpers/index.dart",
       "web/iron_validatable_behavior/index.dart",
       "web/iron_validator_behavior/index.dart",
@@ -2590,6 +2604,7 @@
       "web/seed_element/index.dart",
       "web/style_guide/index.dart",
       "web/test_all/index.dart",
+      "web/test_benchmark/index.dart",
       "web/test_fixture/index.dart",
       "web/demos/index.dart",
       "web/firebase_element/index.dart",
