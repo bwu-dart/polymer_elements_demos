@@ -31,7 +31,9 @@ class PrismDemo extends PolymerElement {
 
   @reflectable
   void render([_, __]) {
-    ($['output'] as dom.Element).text = highlight(code, language);
+    // TODO(zoechi) In Dart 'async()` is necessary dart-lang/polymer-dart/issues/643
+    // check if the workaround can be removed
+    async(() => ($['output'] as dom.Element).text = highlight(code, language));
   }
 
   String highlight(String code, String lang) =>
