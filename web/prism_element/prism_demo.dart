@@ -33,10 +33,13 @@ class PrismDemo extends PolymerElement {
   void render([_, __]) {
     // TODO(zoechi) In Dart 'async()` is necessary dart-lang/polymer-dart/issues/643
     // check if the workaround can be removed
-    async(() => ($['output'] as dom.Element).text = highlight(code, language));
+    async(() => ($['output'] as dom.Element).setInnerHtml(
+        highlight(code, language),
+        validator: new dom.NodeValidatorBuilder.common()
+          ..allowElement('STYLE')));
   }
 
   String highlight(String code, String lang) =>
-      fire('syntax-highlight', detail: {'code': code, 'lang': lang}).detail[
-          'code'];
+      (fire('syntax-highlight', detail: {'code': code, 'lang': lang})
+          as CustomEventWrapper).original.detail['code'];
 }
